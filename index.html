@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Nature photography portfolio">
     <title>Cam-Folio | Nature Photography</title>
+    <link rel="preload" as="image" href="images/hero-mountains.jpg">
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
@@ -56,37 +57,37 @@
                 </figure>
                 <figure>
                     <button type="button" class="photo-btn" popovertarget="photo-4" aria-label="View larger: Highland road">
-                        <img src="images/highlands.jpg" alt="Rugged green highland ridge under low cloud, with a narrow road winding through the valley below">
+                        <img src="images/highlands.jpg" loading="lazy" alt="Rugged green highland ridge under low cloud, with a narrow road winding through the valley below">
                     </button>
                     <figcaption>Highland road</figcaption>
                 </figure>
                 <figure>
                     <button type="button" class="photo-btn" popovertarget="photo-5" aria-label="View larger: Base camp">
-                        <img src="images/snow-camp.jpg" alt="Yellow expedition tent pitched in deep snow beneath jagged white mountain peaks">
+                        <img src="images/snow-camp.jpg" loading="lazy" alt="Yellow expedition tent pitched in deep snow beneath jagged white mountain peaks">
                     </button>
                     <figcaption>Base camp</figcaption>
                 </figure>
                 <figure>
                     <button type="button" class="photo-btn" popovertarget="photo-6" aria-label="View larger: Valley river">
-                        <img src="images/valley-river.jpg" alt="Sheer granite cliff face rising above tall pines and a calm, reflective river">
+                        <img src="images/valley-river.jpg" loading="lazy" alt="Sheer granite cliff face rising above tall pines and a calm, reflective river">
                     </button>
                     <figcaption>Valley river</figcaption>
                 </figure>
                 <figure class="wide">
                     <button type="button" class="photo-btn" popovertarget="photo-7" aria-label="View larger: Green gorge">
-                        <img src="images/green-gorge.jpg" alt="Lush green forest canopy above a shallow stream flowing over flat rocks">
+                        <img src="images/green-gorge.jpg" loading="lazy" alt="Lush green forest canopy above a shallow stream flowing over flat rocks">
                     </button>
                     <figcaption>Green gorge</figcaption>
                 </figure>
                 <figure>
                     <button type="button" class="photo-btn" popovertarget="photo-8" aria-label="View larger: Sea cliffs">
-                        <img src="images/sea-cliffs.jpg" alt="Eroded sea stacks and limestone cliffs along a rugged coastline under an overcast sky">
+                        <img src="images/sea-cliffs.jpg" loading="lazy" alt="Eroded sea stacks and limestone cliffs along a rugged coastline under an overcast sky">
                     </button>
                     <figcaption>Sea cliffs</figcaption>
                 </figure>
                 <figure>
                     <button type="button" class="photo-btn" popovertarget="photo-9" aria-label="View larger: Pine coast">
-                        <img src="images/pine-coast.jpg" alt="Dark pine forest in the foreground overlooking a turquoise bay and distant hills">
+                        <img src="images/pine-coast.jpg" loading="lazy" alt="Dark pine forest in the foreground overlooking a turquoise bay and distant hills">
                     </button>
                     <figcaption>Pine coast</figcaption>
                 </figure>
@@ -161,7 +162,7 @@
 
         <!-- About -->
         <section id="about" class="about">
-            <img src="images/about.jpg" alt="The photographer standing on riverside rocks in a misty pine valley" class="about-img">
+            <img src="images/about.jpg" loading="lazy" alt="The photographer standing on riverside rocks in a misty pine valley" class="about-img">
             <div class="about-text">
                 <h2>About</h2>
                 <p>I'm Your Name, a nature photographer who hikes for the shot. I chase quiet light in remote places and print every image myself.</p>
@@ -201,14 +202,9 @@
                     <div class="form-row full">
                         <label for="shoot">Type of shoot</label>
                         <select id="shoot" name="shoot">
-                            <optgroup label="Photography">
-                                <option>Outdoor portrait</option>
-                                <option>Adventure / travel</option>
-                                <option>Print commission</option>
-                            </optgroup>
-                            <optgroup label="Documentary">
-                                <option>Documentary shoot</option>
-                            </optgroup>
+                            <option>Outdoor portrait</option>
+                            <option>Adventure / travel</option>
+                            <option>Print commission</option>
                             <option>Something else</option>
                         </select>
                     </div>

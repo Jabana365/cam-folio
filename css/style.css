@@ -45,8 +45,22 @@ img {
     max-width: 100%;
 }
 
+/* form controls and buttons don't inherit the page font by default */
+button,
+input,
+select,
+textarea {
+    font: inherit;
+}
+
+/* <address> is italic by default */
+address {
+    font-style: normal;
+}
+
 h1,
-h2 {
+h2,
+h3 {
     font-family: var(--font-heading);
     font-weight: normal;
     line-height: 1.2;
@@ -60,6 +74,7 @@ h2 {
 
 a {
     color: var(--color-accent);
+    text-decoration: none;
 }
 
 /* Sections: same side padding and max width everywhere */
@@ -84,9 +99,7 @@ section {
     border-radius: var(--radius);
     background-color: var(--color-accent);
     color: var(--color-bg);
-    font: inherit;
     font-weight: bold;
-    text-decoration: none;
     cursor: pointer;
     transition: background-color 0.2s;
 }
@@ -115,14 +128,15 @@ section {
     font-family: var(--font-heading);
     font-size: 1.4rem;
     color: var(--color-text);
-    text-decoration: none;
 }
 
 .logo span {
     color: var(--color-accent);
 }
 
-.nav-links {
+/* shared by the header and footer link lists */
+.nav-links,
+.footer-links {
     display: flex;
     flex-wrap: wrap;
     gap: 1.25rem;
@@ -131,13 +145,15 @@ section {
     list-style: none;
 }
 
-.nav-links a {
+.nav-links a,
+.footer-links a {
     color: var(--color-text);
-    text-decoration: none;
 }
 
 .nav-links a:hover,
-.nav-links a:focus-visible {
+.nav-links a:focus-visible,
+.footer-links a:hover,
+.footer-links a:focus-visible {
     color: var(--color-accent);
 }
 
@@ -164,7 +180,6 @@ section {
 
 .hero p {
     font-size: 1.1rem;
-    color: var(--color-text);
 }
 
 .hero .eyebrow {
@@ -206,7 +221,6 @@ section {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: center;
     transition: transform 0.4s ease;
 }
 
@@ -292,7 +306,6 @@ section {
     border-radius: var(--radius);
     background: none;
     color: var(--color-text);
-    font: inherit;
     cursor: pointer;
 }
 
@@ -339,26 +352,27 @@ section {
     gap: 0.35rem;
 }
 
-.contact-form label {
+.contact-form label,
+.documentary legend {
     font-size: 0.9rem;
     color: var(--color-muted);
 }
 
-.contact-form input,
-.contact-form select,
-.contact-form textarea {
+/* only fields directly in a .form-row, so the radio buttons are left alone */
+.form-row > input,
+.form-row > select,
+.form-row > textarea {
     width: 100%;
     padding: 0.7rem;
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     background-color: var(--color-surface);
     color: var(--color-text);
-    font: inherit;
 }
 
-.contact-form input:focus,
-.contact-form select:focus,
-.contact-form textarea:focus {
+.form-row > input:focus,
+.form-row > select:focus,
+.form-row > textarea:focus {
     outline: 2px solid var(--color-accent);
     outline-offset: 1px;
 }
@@ -377,8 +391,6 @@ section {
 
 .documentary legend {
     padding: 0 0.4rem;
-    font-size: 0.9rem;
-    color: var(--color-muted);
 }
 
 .radio-group {
@@ -394,9 +406,7 @@ section {
     cursor: pointer;
 }
 
-.contact-form .radio-group input {
-    width: auto;
-    padding: 0;
+.radio-group input {
     accent-color: var(--color-accent);
 }
 
@@ -422,7 +432,6 @@ section {
 }
 
 .contact-info {
-    font-style: normal;   /* <address> is italic by default */
     padding: calc(var(--space) * 1.5);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
@@ -431,9 +440,6 @@ section {
 }
 
 .contact-info h3 {
-    margin-top: 0;
-    font-family: var(--font-heading);
-    font-weight: normal;
     font-size: 1.3rem;
 }
 
@@ -453,10 +459,6 @@ section {
     overflow-wrap: anywhere;   /* long email never pushes the page sideways */
 }
 
-.contact-info a {
-    text-decoration: none;
-}
-
 /* ---------- Footer (Flexbox) ---------- */
 .site-footer {
     display: flex;
@@ -473,34 +475,10 @@ section {
     margin: 0.25rem 0 0;
 }
 
-.footer-links {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 1rem;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-}
-
-.footer-links a {
-    color: var(--color-text);
-    text-decoration: none;
-}
-
-.footer-links a:hover,
-.footer-links a:focus-visible {
-    color: var(--color-accent);
-}
-
 .footer-contact {
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
-    font-style: normal;
-}
-
-.footer-contact a {
-    text-decoration: none;
 }
 
 /* copyright line sits on its own row under the rest */
@@ -539,7 +517,8 @@ section {
    Desktop
    ========================================== */
 @media (min-width: 900px) {
-    .site-header {
+    .site-header,
+    .site-footer {
         padding-inline: calc(var(--space) * 2);
     }
 
@@ -549,9 +528,5 @@ section {
 
     .contact-layout {
         grid-template-columns: 1fr 2fr;
-    }
-
-    .site-footer {
-        padding-inline: calc(var(--space) * 2);
     }
 }
