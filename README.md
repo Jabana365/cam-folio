@@ -1,5 +1,5 @@
 # cam-folio
-A single-page nature photography portfolio built with plain HTML5 and CSS3, no frameworks and no JavaScript. Week 1 assignment by Abdalla K.
+A single-page nature photography portfolio built with plain HTML5 and CSS3, no frameworks and no JavaScript. Week 1 assignment by Abdalla Elhassan.
 
 ## Features
 - **Hero**: full-width background photo with the page's only `h1` and a "View the gallery" button
