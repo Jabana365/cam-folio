@@ -1,0 +1,97 @@
+/* ==========================================
+   Cam-Folio — Nature Photography Portfolio
+   Plain CSS3, mobile-first
+   ========================================== */
+
+/* ---------- Colour + spacing variables ---------- */
+:root {
+    --color-bg: #14171a;          /* page background */
+    --color-surface: #1e2328;     /* cards, form fields */
+    --color-text: #e9e6df;        /* main text */
+    --color-muted: #9aa3a8;       /* secondary text */
+    --color-accent: #d9a35b;      /* golden-hour orange */
+    --color-accent-dark: #b9843f;
+    --color-border: #2f363d;
+
+    --font-body: "Helvetica Neue", Arial, sans-serif;
+    --font-heading: Georgia, "Times New Roman", serif;
+
+    --space: 1rem;
+    --max-width: 1200px;
+    --radius: 6px;
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    margin: 0;
+    font-family: var(--font-body);
+    line-height: 1.6;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+}
+
+img {
+    display: block;
+    max-width: 100%;
+}
+
+h1,
+h2 {
+    font-family: var(--font-heading);
+    font-weight: normal;
+    line-height: 1.2;
+    margin-top: 0;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: calc(var(--space) * 1.5);
+}
+
+a {
+    color: var(--color-accent);
+}
+
+/* Sections: same side padding and max width everywhere */
+section {
+    /* offset so the sticky header doesn't cover section titles */
+    scroll-margin-top: 4rem;
+}
+
+.gallery-section,
+.about,
+.contact {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: calc(var(--space) * 4) var(--space);
+}
+
+/* ---------- Buttons ---------- */
+.btn {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: var(--radius);
+    background-color: var(--color-accent);
+    color: var(--color-bg);
+    font: inherit;
+    font-weight: bold;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn:hover,
+.btn:focus-visible {
+    background-color: var(--color-accent-dark);
+}
