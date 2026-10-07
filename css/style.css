@@ -324,3 +324,16 @@ section {
         grid-column: 1 / -1;
     }
 }
+
+/* ==========================================
+   Desktop
+   ========================================== */
+@media (min-width: 900px) {
+    .site-header {
+        padding-inline: calc(var(--space) * 2);
+    }
+
+    .about {
+        grid-template-columns: 1fr 1fr;
+    }
+}
