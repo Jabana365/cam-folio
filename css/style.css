@@ -140,3 +140,37 @@ section {
 .nav-links a:focus-visible {
     color: var(--color-accent);
 }
+
+/* ---------- Hero (Flexbox) ---------- */
+.hero {
+    display: flex;
+    align-items: flex-end;
+    min-height: min(85vh, 720px);
+    padding: calc(var(--space) * 3) var(--space);
+    /* dark gradient keeps the text readable over the photo */
+    background:
+        linear-gradient(to top, rgba(20, 23, 26, 0.95), rgba(20, 23, 26, 0.15)),
+        url("../images/hero-mountains.jpg") center / cover no-repeat;
+}
+
+.hero-content {
+    max-width: 40rem;
+}
+
+.hero h1 {
+    font-size: clamp(2.25rem, 7vw, 4.5rem);
+    margin-bottom: var(--space);
+}
+
+.hero p {
+    font-size: 1.1rem;
+    color: var(--color-text);
+}
+
+.hero .eyebrow {
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-size: 0.85rem;
+    color: var(--color-accent);
+}
