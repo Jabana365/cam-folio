@@ -12,6 +12,8 @@
     --color-accent: #d9a35b;      /* golden-hour orange */
     --color-accent-dark: #b9843f;
     --color-border: #2f363d;
+    --color-section-alt: #1a1e22; /* every other section */
+    --color-footer: #0e1012;      /* darkest band at the bottom */
 
     --font-body: "Helvetica Neue", Arial, sans-serif;
     --font-heading: Georgia, "Times New Roman", serif;
@@ -59,8 +61,7 @@ address {
 }
 
 h1,
-h2,
-h3 {
+h2 {
     font-family: var(--font-heading);
     font-weight: normal;
     line-height: 1.2;
@@ -83,12 +84,29 @@ section {
     scroll-margin-top: 4rem;
 }
 
+/* Sections stretch full width so their background colour reaches the edges.
+   The side padding grows on wide screens to keep the content within --max-width:
+   max() picks whichever is bigger, the normal 1rem gap or half the leftover space. */
+.gallery-section,
+.about,
+.contact,
+.site-footer {
+    padding-inline: max(var(--space), (100% - var(--max-width)) / 2);
+}
+
 .gallery-section,
 .about,
 .contact {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: calc(var(--space) * 4) var(--space);
+    padding-block: calc(var(--space) * 4);
+}
+
+/* alternate background colours to separate the sections */
+.about {
+    background-color: var(--color-section-alt);
+}
+
+.site-footer {
+    background-color: var(--color-footer);
 }
 
 /* ---------- Buttons ---------- */
@@ -335,15 +353,23 @@ section {
 }
 
 /* ---------- Contact form ---------- */
+/* centred heading, intro and form */
+.contact h2,
+.contact > p {
+    text-align: center;
+}
+
 .contact > p {
     color: var(--color-muted);
     margin-top: -0.75rem;
+    margin-bottom: calc(var(--space) * 2);
 }
 
 .contact-form {
     display: grid;
     gap: var(--space);
     max-width: 44rem;
+    margin-inline: auto;   /* centre the form in the section */
 }
 
 .form-row {
@@ -422,41 +448,7 @@ section {
 }
 
 .contact-form .btn {
-    justify-self: start;
-}
-
-/* ---------- Contact details ---------- */
-.contact-layout {
-    display: grid;
-    gap: calc(var(--space) * 2);
-}
-
-.contact-info {
-    padding: calc(var(--space) * 1.5);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    background-color: var(--color-surface);
-    align-self: start;
-}
-
-.contact-info h3 {
-    font-size: 1.3rem;
-}
-
-.contact-info dl {
-    margin: 0;
-}
-
-.contact-info dt {
-    font-size: 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-muted);
-}
-
-.contact-info dd {
-    margin: 0 0 var(--space);
-    overflow-wrap: anywhere;   /* long email never pushes the page sideways */
+    justify-self: center;
 }
 
 /* ---------- Footer (Flexbox) ---------- */
@@ -465,7 +457,7 @@ section {
     flex-wrap: wrap;
     justify-content: space-between;
     gap: calc(var(--space) * 1.5);
-    padding: calc(var(--space) * 2.5) var(--space) calc(var(--space) * 1.5);
+    padding-block: calc(var(--space) * 2.5) calc(var(--space) * 1.5);
     border-top: 1px solid var(--color-border);
     color: var(--color-muted);
     font-size: 0.9rem;
@@ -517,16 +509,11 @@ section {
    Desktop
    ========================================== */
 @media (min-width: 900px) {
-    .site-header,
-    .site-footer {
+    .site-header {
         padding-inline: calc(var(--space) * 2);
     }
 
     .about {
         grid-template-columns: 1fr 1fr;
-    }
-
-    .contact-layout {
-        grid-template-columns: 1fr 2fr;
     }
 }
