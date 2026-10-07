@@ -215,3 +215,22 @@ section {
     font-size: 0.9rem;
     background: linear-gradient(to top, rgba(0, 0, 0, 0.75), transparent);
 }
+
+/* ---------- About (Grid) ---------- */
+.about {
+    display: grid;
+    gap: calc(var(--space) * 2);
+    align-items: center;
+}
+
+.about-img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    border-radius: var(--radius);
+}
+
+.about-text p {
+    color: var(--color-muted);
+    max-width: 34rem;
+}
