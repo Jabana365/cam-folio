@@ -209,6 +209,7 @@ section {
     background-color: rgba(20, 23, 26, 0.55);
     border: 1px solid rgba(217, 163, 91, 0.4);
     border-radius: 999px;
+    -webkit-backdrop-filter: blur(4px);   /* Safari 17 and older */
     backdrop-filter: blur(4px);
 }
 
@@ -254,6 +255,7 @@ section {
     background-color: rgba(20, 23, 26, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.15);
     border-radius: var(--radius);
+    -webkit-backdrop-filter: blur(2px);   /* Safari 17 and older */
     backdrop-filter: blur(2px);                   /* light blur, photo stays visible */
     text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);   /* keeps text readable on a lighter panel */
     pointer-events: none;   /* clicks pass through to the photo button */
