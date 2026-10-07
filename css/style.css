@@ -234,3 +234,53 @@ section {
     color: var(--color-muted);
     max-width: 34rem;
 }
+
+/* ---------- Contact form ---------- */
+.contact > p {
+    color: var(--color-muted);
+    margin-top: -0.75rem;
+}
+
+.contact-form {
+    display: grid;
+    gap: var(--space);
+    max-width: 44rem;
+}
+
+.form-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+}
+
+.contact-form label {
+    font-size: 0.9rem;
+    color: var(--color-muted);
+}
+
+.contact-form input,
+.contact-form select,
+.contact-form textarea {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background-color: var(--color-surface);
+    color: var(--color-text);
+    font: inherit;
+}
+
+.contact-form input:focus,
+.contact-form select:focus,
+.contact-form textarea:focus {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 1px;
+}
+
+.contact-form textarea {
+    resize: vertical;
+}
+
+.contact-form .btn {
+    justify-self: start;
+}
