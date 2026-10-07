@@ -1,5 +1,5 @@
 # cam-folio
-A single-page nature photography portfolio built with plain HTML5 and CSS3, no frameworks and no JavaScript. Week 1 assignment.
+A single-page nature photography portfolio built with plain HTML5 and CSS3, no frameworks and no JavaScript. Week 1 assignment by Abdalla K.
 
 ## Features
 - **Hero**: full-width background photo with the page's only `h1` and a "View the gallery" button
@@ -27,7 +27,7 @@ A single-page nature photography portfolio built with plain HTML5 and CSS3, no f
 - `aria-label`: names the two navs ("Main" and "Footer") so screen readers can tell them apart. The photo buttons have no label of their own, so screen readers read each photo's full `alt` text
 - `popover` / `popovertarget`: opens and closes the pop-up viewer without JavaScript
 - `<fieldset>` + `<legend>`: groups the documentary Yes/No question
-- `loading="lazy"` on lower images and `<link rel="preload">` for the hero photo, so the page loads faster
+- `loading="lazy"` on lower images and the pop-up photos, and `<link rel="preload">` for the hero photo, so the page loads faster
 - Descriptive `alt` text on every photo
 
 **CSS**
@@ -36,7 +36,7 @@ A single-page nature photography portfolio built with plain HTML5 and CSS3, no f
 - `grid-auto-flow: dense` with wide/tall tiles (only from 640px, so phones never scroll sideways)
 - `max()` side padding: sections stretch full width for their background colour while content stays within 1200px
 - `clamp()`: the hero heading scales with the screen size between a minimum and maximum
-- `backdrop-filter` + see-through `rgba()` backgrounds: highlight behind the hero label and gallery captions
+- `backdrop-filter` (with `-webkit-` prefix for older Safari) + see-through `rgba()` backgrounds: highlight behind the hero label and gallery captions
 - `position: sticky` header with `scroll-margin-top` so section titles aren't hidden under it
 
 ## Run it
