@@ -284,3 +284,19 @@ section {
 .contact-form .btn {
     justify-self: start;
 }
+
+/* ---------- Footer (Flexbox) ---------- */
+.site-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 0.5rem;
+    padding: calc(var(--space) * 1.5) var(--space);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-muted);
+    font-size: 0.9rem;
+}
+
+.site-footer p {
+    margin: 0;
+}
