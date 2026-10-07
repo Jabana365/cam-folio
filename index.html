@@ -164,7 +164,7 @@
             <div class="about-text">
                 <h2>About</h2>
                 <p>I'm Your Name, a nature photographer who hikes for the shot. I chase quiet light in remote places and print every image myself.</p>
-                <p>Available for outdoor portraits, adventure shoots and print commissions.</p>
+                <p>Available for outdoor portraits, adventure shoots, wildlife and hunting-trip documentaries, and print commissions.</p>
             </div>
         </section>
 
@@ -184,12 +184,37 @@
                 <div class="form-row full">
                     <label for="shoot">Type of shoot</label>
                     <select id="shoot" name="shoot">
-                        <option>Outdoor portrait</option>
-                        <option>Adventure / travel</option>
-                        <option>Print commission</option>
+                        <optgroup label="Photography">
+                            <option>Outdoor portrait</option>
+                            <option>Adventure / travel</option>
+                            <option>Print commission</option>
+                        </optgroup>
+                        <optgroup label="Documentary">
+                            <option>Documentary shoot</option>
+                        </optgroup>
                         <option>Something else</option>
                     </select>
                 </div>
+
+                <!-- Documentary question: the subject list only appears when "Yes" is picked (CSS :has) -->
+                <fieldset class="form-row full documentary">
+                    <legend>Do you need documentary coverage?</legend>
+                    <div class="radio-group">
+                        <label><input type="radio" name="documentary" value="no" checked> No</label>
+                        <label><input type="radio" name="documentary" value="yes" id="doc-yes"> Yes</label>
+                    </div>
+                    <div class="form-row doc-subject">
+                        <label for="doc-type">Documentary subject</label>
+                        <select id="doc-type" name="doc-type">
+                            <option>Hunting trip</option>
+                            <option>Wildlife behaviour (life of wild animals)</option>
+                            <option>Expedition / trek</option>
+                            <option>Conservation project</option>
+                            <option>Fishing trip</option>
+                            <option>Other (tell me below)</option>
+                        </select>
+                    </div>
+                </fieldset>
                 <div class="form-row full">
                     <label for="message">Message</label>
                     <textarea id="message" name="message" rows="5" required></textarea>

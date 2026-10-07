@@ -359,6 +359,49 @@ section {
     resize: vertical;
 }
 
+/* Documentary question */
+.documentary {
+    margin: 0;
+    padding: var(--space);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+
+.documentary legend {
+    padding: 0 0.4rem;
+    font-size: 0.9rem;
+    color: var(--color-muted);
+}
+
+.radio-group {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    color: var(--color-text);
+    cursor: pointer;
+}
+
+.contact-form .radio-group input {
+    width: auto;
+    padding: 0;
+    accent-color: var(--color-accent);
+}
+
+/* hide the subject list until "Yes" is checked */
+.doc-subject {
+    display: none;
+    margin-top: var(--space);
+}
+
+.documentary:has(#doc-yes:checked) .doc-subject {
+    display: flex;
+}
+
 .contact-form .btn {
     justify-self: start;
 }
