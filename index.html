@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Nature photography portfolio">
+    <title>Cam-Folio | Nature Photography</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header class="site-header">
+        <a href="#home" class="logo">Cam<span>-</span>Folio</a>
+        <nav aria-label="Main">
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#gallery">Gallery</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <!-- Hero -->
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <p class="eyebrow">Nature photography</p>
+                <h1>Light on the wild places</h1>
+                <p>Mountains, rivers and coastlines, shot at first and last light.</p>
+                <a href="#gallery" class="btn">View the gallery</a>
+            </div>
+        </section>
+
+        <!-- Gallery: the centerpiece -->
+        <section id="gallery" class="gallery-section">
+            <h2>Gallery</h2>
+            <div class="gallery">
+                <figure class="wide">
+                    <img src="images/fjord.jpg" alt="Blue fjord winding between steep grey cliffs">
+                    <figcaption>Fjord, Norway</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/canyon-sunset.jpg" alt="Red canyon rocks glowing at sunset">
+                    <figcaption>Canyon at dusk</figcaption>
+                </figure>
+                <figure class="tall">
+                    <img src="images/waterfall.jpg" alt="Waterfall dropping into a green forest valley">
+                    <figcaption>Hidden falls</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/highlands.jpg" alt="Green highland ridge with a winding road below">
+                    <figcaption>Highland road</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/snow-camp.jpg" alt="Yellow tent pitched in snow below white peaks">
+                    <figcaption>Base camp</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/valley-river.jpg" alt="Granite cliffs and pine trees above a calm river">
+                    <figcaption>Valley river</figcaption>
+                </figure>
+                <figure class="wide">
+                    <img src="images/green-gorge.jpg" alt="Lush green trees above a rocky stream">
+                    <figcaption>Green gorge</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/sea-cliffs.jpg" alt="Sea stacks and cliffs along a rocky coast">
+                    <figcaption>Sea cliffs</figcaption>
+                </figure>
+                <figure>
+                    <img src="images/pine-coast.jpg" alt="Pine forest above a turquoise bay">
+                    <figcaption>Pine coast</figcaption>
+                </figure>
+            </div>
+        </section>
+
+        <!-- About: kept short -->
+        <section id="about" class="about">
+            <img src="images/about.jpg" alt="Photographer standing beside a misty forest river" class="about-img">
+            <div class="about-text">
+                <h2>About</h2>
+                <p>I'm Your Name, a nature photographer who hikes for the shot. I chase quiet light in remote places and print every image myself.</p>
+                <p>Available for outdoor portraits, adventure shoots and print commissions.</p>
+            </div>
+        </section>
+
+        <!-- Contact: form instead of a shop button -->
+        <section id="contact" class="contact">
+            <h2>Book a shoot</h2>
+            <p>Tell me what you have in mind and I'll get back to you within two days.</p>
+            <form class="contact-form" action="#contact" method="get">
+                <div class="form-row">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-row">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
+                <div class="form-row full">
+                    <label for="shoot">Type of shoot</label>
+                    <select id="shoot" name="shoot">
+                        <option>Outdoor portrait</option>
+                        <option>Adventure / travel</option>
+                        <option>Print commission</option>
+                        <option>Something else</option>
+                    </select>
+                </div>
+                <div class="form-row full">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" rows="5" required></textarea>
+                </div>
+                <button type="submit" class="btn">Send request</button>
+            </form>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <p>&copy; 2026 Your Name &middot; Cam-Folio</p>
+        <a href="#home">Back to top</a>
+    </footer>
+</body>
+</html>
