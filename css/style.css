@@ -168,11 +168,19 @@ section {
 }
 
 .hero .eyebrow {
-    margin: 0 0 0.5rem;
+    display: inline-block;   /* background only as wide as the text */
+    margin: 0 0 0.75rem;
+    padding: 0.3rem 0.8rem;
     text-transform: uppercase;
     letter-spacing: 0.2em;
     font-size: 0.85rem;
+    font-weight: bold;
     color: var(--color-accent);
+    /* see-through dark highlight so the text stands out from the photo */
+    background-color: rgba(20, 23, 26, 0.55);
+    border: 1px solid rgba(217, 163, 91, 0.4);
+    border-radius: 999px;
+    backdrop-filter: blur(4px);
 }
 
 /* ---------- Gallery (Grid) — the centerpiece ---------- */
@@ -398,6 +406,7 @@ section {
     margin-top: var(--space);
 }
 
+/* :has() shows it when the "Yes" radio is checked, no JavaScript needed */
 .documentary:has(#doc-yes:checked) .doc-subject {
     display: flex;
 }
