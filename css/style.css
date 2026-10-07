@@ -1,5 +1,3 @@
-
-
 /* ---------- Colour + spacing variables ---------- */
 :root {
     --color-bg: #14171a;          /* page background */
@@ -320,6 +318,7 @@ section {
 .lightbox img {
     width: 100%;
     max-height: 80vh;
+    min-height: 0;         /* lets the photo shrink so the caption bar always fits on short screens */
     object-fit: contain;   /* show the whole photo, no cropping */
     background-color: #000;
 }
