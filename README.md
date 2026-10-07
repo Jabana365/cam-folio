@@ -24,7 +24,7 @@ A single-page nature photography portfolio built with plain HTML5 and CSS3, no f
 - `<section>`: each part of the page is its own section with an `id`, which the nav links jump to
 - `<figure>` + `<figcaption>`: each gallery photo and its caption are grouped as one self-contained item
 - `<address>`: the semantic tag for the contact details in the footer
-- `aria-label`: names the two navs ("Main" and "Footer") and the photo buttons, so screen readers can tell them apart
+- `aria-label`: names the two navs ("Main" and "Footer") so screen readers can tell them apart. The photo buttons have no label of their own, so screen readers read each photo's full `alt` text
 - `popover` / `popovertarget`: opens and closes the pop-up viewer without JavaScript
 - `<fieldset>` + `<legend>`: groups the documentary Yes/No question
 - `loading="lazy"` on lower images and `<link rel="preload">` for the hero photo, so the page loads faster
