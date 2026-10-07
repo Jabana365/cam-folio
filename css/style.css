@@ -451,31 +451,51 @@ section {
     justify-self: center;
 }
 
-/* ---------- Footer (Flexbox) ---------- */
+/* ---------- Footer (Grid) ---------- */
+/* one column on phones; three columns from 640px (see Tablet section) */
 .site-footer {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: calc(var(--space) * 1.5);
-    padding-block: calc(var(--space) * 2.5) calc(var(--space) * 1.5);
+    display: grid;
+    gap: calc(var(--space) * 2);
+    padding-block: calc(var(--space) * 3) calc(var(--space) * 1.5);
     border-top: 1px solid var(--color-border);
     color: var(--color-muted);
     font-size: 0.9rem;
 }
 
 .site-footer p {
-    margin: 0.25rem 0 0;
+    margin: 0.5rem 0 0;
+}
+
+.footer-brand p {
+    max-width: 22rem;   /* keep the tagline to a short, readable line */
+}
+
+/* small uppercase column headings */
+.footer-title {
+    margin-bottom: var(--space);
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-text);
+}
+
+/* footer links stack in a column instead of a row */
+.footer-links {
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
 .footer-contact {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.5rem;
 }
 
-/* copyright line sits on its own row under the rest */
+/* copyright spans every column, on its own row at the bottom */
 .footer-copy {
-    flex-basis: 100%;
+    grid-column: 1 / -1;
     padding-top: var(--space);
     border-top: 1px solid var(--color-border);
     font-size: 0.8rem;
@@ -493,6 +513,11 @@ section {
 
     .gallery .tall {
         grid-row: span 2;
+    }
+
+    /* brand column twice as wide as the links and contact columns */
+    .site-footer {
+        grid-template-columns: 2fr 1fr 1fr;
     }
 
     .contact-form {
