@@ -1,7 +1,4 @@
-/* ==========================================
-   Cam-Folio — Nature Photography Portfolio
-   Plain CSS3, mobile-first
-   ========================================== */
+
 
 /* ---------- Colour + spacing variables ---------- */
 :root {
@@ -12,7 +9,7 @@
     --color-accent: #d9a35b;      /* golden-hour orange */
     --color-accent-dark: #b9843f;
     --color-border: #2f363d;
-    --color-section-alt: #1a1e22; /* every other section */
+    --color-section-alt: #1a1e22; /* About section background */
     --color-footer: #0e1012;      /* darkest band at the bottom */
 
     --font-body: "Helvetica Neue", Arial, sans-serif;
@@ -78,15 +75,16 @@ a {
     text-decoration: none;
 }
 
-/* Sections: same side padding and max width everywhere */
+/* offset anchor jumps so the sticky header doesn't cover section titles */
 section {
-    /* offset so the sticky header doesn't cover section titles */
     scroll-margin-top: 4rem;
 }
 
 /* Sections stretch full width so their background colour reaches the edges.
    The side padding grows on wide screens to keep the content within --max-width:
    max() picks whichever is bigger, the normal 1rem gap or half the leftover space. */
+.site-header,
+.hero,
 .gallery-section,
 .about,
 .contact,
@@ -98,15 +96,6 @@ section {
 .about,
 .contact {
     padding-block: calc(var(--space) * 4);
-}
-
-/* alternate background colours to separate the sections */
-.about {
-    background-color: var(--color-section-alt);
-}
-
-.site-footer {
-    background-color: var(--color-footer);
 }
 
 /* ---------- Buttons ---------- */
@@ -137,7 +126,7 @@ section {
     justify-content: space-between;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.75rem var(--space);
+    padding-block: 0.75rem;
     background-color: rgba(20, 23, 26, 0.92);
     border-bottom: 1px solid var(--color-border);
 }
@@ -156,11 +145,14 @@ section {
 .nav-links,
 .footer-links {
     display: flex;
-    flex-wrap: wrap;
-    gap: 1.25rem;
     margin: 0;
     padding: 0;
     list-style: none;
+}
+
+.nav-links {
+    flex-wrap: wrap;
+    gap: 1.25rem;
 }
 
 .nav-links a,
@@ -180,7 +172,7 @@ section {
     display: flex;
     align-items: flex-end;
     min-height: min(85vh, 720px);
-    padding: calc(var(--space) * 3) var(--space);
+    padding-block: calc(var(--space) * 3);
     /* dark gradient keeps the text readable over the photo */
     background:
         linear-gradient(to top, rgba(20, 23, 26, 0.95), rgba(20, 23, 26, 0.15)),
@@ -200,12 +192,18 @@ section {
     font-size: 1.1rem;
 }
 
+/* small uppercase labels: hero eyebrow, caption location, footer headings */
+.eyebrow,
+.caption-location,
+.footer-title {
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+}
+
 .hero .eyebrow {
     display: inline-block;   /* background only as wide as the text */
     margin: 0 0 0.75rem;
     padding: 0.3rem 0.8rem;
-    text-transform: uppercase;
-    letter-spacing: 0.2em;
     font-size: 0.85rem;
     font-weight: bold;
     color: var(--color-accent);
@@ -243,7 +241,7 @@ section {
 }
 
 /* caption panel floats over the bottom of the photo:
-   see-through dark background + blur keeps the text readable on any photo */
+   see-through background, light blur and text shadow keep the text readable on any photo */
 .gallery figcaption {
     position: absolute;    /* placed relative to the figure */
     left: 0.5rem;
@@ -263,20 +261,16 @@ section {
     pointer-events: none;   /* clicks pass through to the photo button */
 }
 
-.caption-title {
+/* photo title, in the gallery caption and the pop-up bar */
+.caption-title,
+.lightbox-bar p {
     font-family: var(--font-heading);
-    font-size: 1.05rem;
+    font-size: 1.1rem;
 }
 
 .caption-location {
     font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
     color: var(--color-accent);
-}
-
-.caption-desc {
-    color: var(--color-text);
 }
 
 /* Each photo is a button that opens its pop-up viewer */
@@ -340,8 +334,6 @@ section {
 
 .lightbox-bar p {
     margin: 0;
-    font-family: var(--font-heading);
-    font-size: 1.1rem;
 }
 
 .lightbox-bar span {
@@ -370,6 +362,7 @@ section {
     display: grid;
     gap: calc(var(--space) * 2);
     align-items: center;
+    background-color: var(--color-section-alt);
 }
 
 .about-img {
@@ -411,7 +404,7 @@ section {
 }
 
 .contact-form label,
-.documentary legend {
+.contact-form legend {
     font-size: 0.9rem;
     color: var(--color-muted);
 }
@@ -490,6 +483,7 @@ section {
     gap: calc(var(--space) * 2);
     padding-block: calc(var(--space) * 3) calc(var(--space) * 1.5);
     border-top: 1px solid var(--color-border);
+    background-color: var(--color-footer);
     color: var(--color-muted);
     font-size: 0.9rem;
 }
@@ -502,23 +496,15 @@ section {
     max-width: 22rem;   /* keep the tagline to a short, readable line */
 }
 
-/* small uppercase column headings */
+/* footer column headings (h3) */
 .footer-title {
-    margin-bottom: var(--space);
-    font-family: var(--font-body);
+    margin: 0 0 var(--space);
     font-size: 0.8rem;
-    font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 0.15em;
     color: var(--color-text);
 }
 
-/* footer links stack in a column instead of a row */
-.footer-links {
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
+/* footer links and contact lines stack in a column */
+.footer-links,
 .footer-contact {
     display: flex;
     flex-direction: column;
@@ -534,9 +520,7 @@ section {
     font-size: 0.8rem;
 }
 
-/* ==========================================
-   Tablet and up
-   ========================================== */
+/* Tablet and up (640px+) */
 @media (min-width: 640px) {
     /* wide/tall photos only span on screens with 2+ columns,
        otherwise they would create an extra column and cause horizontal scroll */
@@ -563,14 +547,8 @@ section {
     }
 }
 
-/* ==========================================
-   Desktop
-   ========================================== */
+/* Desktop (900px+) */
 @media (min-width: 900px) {
-    .site-header {
-        padding-inline: calc(var(--space) * 2);
-    }
-
     .about {
         grid-template-columns: 1fr 1fr;
     }
