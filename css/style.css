@@ -300,3 +300,27 @@ section {
 .site-footer p {
     margin: 0;
 }
+
+/* ==========================================
+   Tablet and up
+   ========================================== */
+@media (min-width: 640px) {
+    /* wide/tall photos only span on screens with 2+ columns,
+       otherwise they would create an extra column and cause horizontal scroll */
+    .gallery .wide {
+        grid-column: span 2;
+    }
+
+    .gallery .tall {
+        grid-row: span 2;
+    }
+
+    .contact-form {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .form-row.full,
+    .contact-form .btn {
+        grid-column: 1 / -1;
+    }
+}
