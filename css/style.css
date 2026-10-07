@@ -406,20 +406,100 @@ section {
     justify-self: start;
 }
 
+/* ---------- Contact details ---------- */
+.contact-layout {
+    display: grid;
+    gap: calc(var(--space) * 2);
+}
+
+.contact-info {
+    font-style: normal;   /* <address> is italic by default */
+    padding: calc(var(--space) * 1.5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background-color: var(--color-surface);
+    align-self: start;
+}
+
+.contact-info h3 {
+    margin-top: 0;
+    font-family: var(--font-heading);
+    font-weight: normal;
+    font-size: 1.3rem;
+}
+
+.contact-info dl {
+    margin: 0;
+}
+
+.contact-info dt {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-muted);
+}
+
+.contact-info dd {
+    margin: 0 0 var(--space);
+    overflow-wrap: anywhere;   /* long email never pushes the page sideways */
+}
+
+.contact-info a {
+    text-decoration: none;
+}
+
 /* ---------- Footer (Flexbox) ---------- */
 .site-footer {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    gap: 0.5rem;
-    padding: calc(var(--space) * 1.5) var(--space);
+    gap: calc(var(--space) * 1.5);
+    padding: calc(var(--space) * 2.5) var(--space) calc(var(--space) * 1.5);
     border-top: 1px solid var(--color-border);
     color: var(--color-muted);
     font-size: 0.9rem;
 }
 
 .site-footer p {
+    margin: 0.25rem 0 0;
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.footer-links a {
+    color: var(--color-text);
+    text-decoration: none;
+}
+
+.footer-links a:hover,
+.footer-links a:focus-visible {
+    color: var(--color-accent);
+}
+
+.footer-contact {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    font-style: normal;
+}
+
+.footer-contact a {
+    text-decoration: none;
+}
+
+/* copyright line sits on its own row under the rest */
+.footer-copy {
+    flex-basis: 100%;
+    padding-top: var(--space);
+    border-top: 1px solid var(--color-border);
+    font-size: 0.8rem;
 }
 
 /* ==========================================
@@ -456,5 +536,13 @@ section {
 
     .about {
         grid-template-columns: 1fr 1fr;
+    }
+
+    .contact-layout {
+        grid-template-columns: 1fr 2fr;
+    }
+
+    .site-footer {
+        padding-inline: calc(var(--space) * 2);
     }
 }
