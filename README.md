@@ -6,7 +6,7 @@ A single-page nature photography portfolio built with plain HTML5 and CSS3, no f
 - **Gallery**: the centerpiece. A CSS Grid of nine photos using `object-fit: cover`, so every image fills its tile without stretching. Each photo has a caption (title, location, short description) in a see-through panel
 - **Pop-up viewer**: click any photo to see it full size with its caption; close with the button, Esc, or a click outside
 - **About**: short bio with a photo, on a lighter background band
-- **Book a shoot**: centred booking form (replaces a shop button), with a "Do you need documentary coverage?" question. The subject list (hunting trip, wildlife behaviour, expedition...) only appears when "Yes" is picked
+- **Contact**: centred booking form (replaces a shop button), with a "Do you need documentary coverage?" question. The subject list (hunting trip, wildlife behaviour, expedition...) only appears when "Yes" is picked
 - **Footer**: three columns (brand, Explore links, Contact details) and a centred copyright line
 - **Sticky header** with nav links that scroll smoothly to each section
 - **Responsive**: phone, tablet and desktop layouts with no horizontal scroll
