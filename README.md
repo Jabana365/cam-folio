@@ -32,6 +32,11 @@ A single-page nature photography portfolio built with plain HTML5 and CSS3, no f
 
 **CSS**
 - `:has()`: shows the documentary subject list only when "Yes" is checked
+  - `.documentary` is the `<fieldset>` that wraps the radios and the dropdown.
+  - `:has(#doc-yes:checked)` matches a `.documentary` that contains the "Yes" radio (`id="doc-yes"`) while it is checked. `:has()` is the "parent selector": it styles an element based on what is inside it.
+  - `.doc-subject` is the dropdown inside that fieldset.
+  - When "Yes" is selected, the fieldset matches, and this rule sets the dropdown to `display: flex`. That rule has higher specificity than the `display: none` rule, so it wins. When the user switches back to "No" (checked by default), the `:has()` condition no longer matches. The dropdown goes back to `display: none`.
+
 - `::backdrop` and `:popover-open`: style the dark overlay and layout of the pop-up viewer
 - `grid-auto-flow: dense` with wide/tall tiles (only from 640px, so phones never scroll sideways)
 - `max()` side padding: sections stretch full width for their background colour while content stays within 1200px
