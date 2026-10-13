@@ -1,51 +1,55 @@
 # cam-folio
-A single-page nature photography portfolio built with plain HTML5 and CSS3, no frameworks and no JavaScript. Week 1 assignment by Abdalla Elhassan.
+A single-page nature photography portfolio, rebuilt with **React, Vite and Tailwind CSS**. Week 2 assignment by Abdalla Elhassan, evolved from the Week 1 plain HTML/CSS site (see [Assignment 1](#assignment-1-plain-html-and-css)).
 
 ## Features
-- **Hero**: full-width background photo with the page's only `h1` and a "View the gallery" button
-- **Gallery**: the centerpiece. A CSS Grid of nine photos using `object-fit: cover`, so every image fills its tile without stretching. Each photo has a caption (title, location, short description) in a see-through panel
-- **Pop-up viewer**: click any photo to see it full size with its caption; close with the button, Esc, or a click outside
-- **About**: short bio with a photo, on a lighter background band
-- **Contact**: centred booking form (replaces a shop button), with a "Do you need documentary coverage?" question. The subject list (hunting trip, wildlife behaviour, expedition...) only appears when "Yes" is picked
-- **Footer**: three columns (brand, Explore links, Contact details) and a centred copyright line
-- **Sticky header** with nav links that scroll smoothly to each section
-- **Responsive**: phone, tablet and desktop layouts with no horizontal scroll
+- **Gallery** of 12 photos in four categories (Mountains, Desert, Waterfalls & Rivers, Coast), all rendered from one data file
+- **Category filter**: chip buttons built with `useState`
+- **Search and sort**: search by title or place, and sort by title, location or rating. All of it combines with the category filter
+- **Star rating**: a reusable, controlled `StarRating` on every photo. Each card shows a hardcoded community score and your own click adds to it
+- **Lightbox**: click a photo to see it larger, with previous/next buttons, arrow keys, Esc to close, and the photo's category
+- **Contact form**: the "documentary coverage" question is a controlled radio group, and the subject list only appears when "Yes" is picked
+- **Responsive, mobile-first**: Tailwind classes go from unprefixed (phone) to `sm:` (640px) and `md:` (900px). The header turns into a hamburger menu below 900px, and there is no horizontal scroll at any width
 
-## How it's built
-- `box-sizing: border-box` set globally
-- Colours, fonts and spacing stored in CSS variables in `:root`
-- **Flexbox**: header/nav, hero, form rows, caption panels, pop-up caption bar
-- **Grid**: gallery (`auto-fill` + `minmax`), About, booking form and footer
-- Mobile-first, with breakpoints at 640px (tablet) and 900px (desktop)
-- Semantic landmarks: `header`, `nav`, `main`, `section`, `footer`
+## Tech
+- [Vite](https://vite.dev) + [React](https://react.dev) (plain JavaScript, no TypeScript)
+- [Tailwind CSS](https://tailwindcss.com) v4, wired in with the Vite plugin. Colours and fonts are theme tokens in `src/index.css`
+- No other libraries. All data is hardcoded for now (a backend is planned for Week 3)
 
-## Extras beyond the brief
-**HTML**
-- `<section>`: each part of the page is its own section with an `id`, which the nav links jump to
-- `<figure>` + `<figcaption>`: each gallery photo and its caption are grouped as one self-contained item
-- `<address>`: the semantic tag for the contact details in the footer
-- `aria-label`: names the two navs ("Main" and "Footer") so screen readers can tell them apart. The photo buttons have no label of their own, so screen readers read each photo's full `alt` text
-- `popover` / `popovertarget`: opens and closes the pop-up viewer without JavaScript
-- `<fieldset>` + `<legend>`: groups the documentary Yes/No question
-- `loading="lazy"` on lower images and the pop-up photos, and `<link rel="preload">` for the hero photo, so the page loads faster
-- Descriptive `alt` text on every photo
+## Project structure
+```
+src/
+  data/
+    photos.js        the 12 photos (title, location, category, rating numbers...)
+    navLinks.js      nav links shared by Header and Footer
+  components/
+    Header.jsx  Hero.jsx  Gallery.jsx  About.jsx  Contact.jsx  Footer.jsx
+    PhotoCard.jsx    one gallery card, used for every photo
+    StarRating.jsx   the reusable controlled component
+    Lightbox.jsx     full-size viewer
+    Logo.jsx  NavList.jsx
+  utils/
+    ratings.js       combines community votes with your own
+  App.jsx            puts the sections together
+  index.css          Tailwind import, theme tokens, shared utilities (field, btn-primary, section-title, px-page)
+```
 
-**CSS**
-- `:has()`: shows the documentary subject list only when "Yes" is checked
-  - `.documentary` is the `<fieldset>` that wraps the radios and the dropdown.
-  - `:has(#doc-yes:checked)` matches a `.documentary` that contains the "Yes" radio (`id="doc-yes"`) while it is checked. `:has()` is the "parent selector": it styles an element based on what is inside it.
-  - `.doc-subject` is the dropdown inside that fieldset.
-  - When "Yes" is selected, the fieldset matches, and this rule sets the dropdown to `display: flex`. That rule has higher specificity than the `display: none` rule, so it wins. When the user switches back to "No" (checked by default), the `:has()` condition no longer matches. The dropdown goes back to `display: none`.
-
-- `::backdrop` and `:popover-open`: style the dark overlay and layout of the pop-up viewer
-- `grid-auto-flow: dense` with wide/tall tiles (only from 640px, so phones never scroll sideways)
-- `max()` side padding: sections stretch full width for their background colour while content stays within 1200px
-- `clamp()`: the hero heading scales with the screen size between a minimum and maximum
-- `backdrop-filter` (with `-webkit-` prefix for older Safari) + see-through `rgba()` backgrounds: highlight behind the hero label and gallery captions
-- `position: sticky` header with `scroll-margin-top` so section titles aren't hidden under it
+## How the state works
+- **`Gallery`** owns the state: `category`, `search`, `sortBy`, `ratings` and `openIndex` (which photo the lightbox shows). The list of visible photos is *derived* from that state on every render with `.filter()` and `.sort()`, never stored separately.
+- **`StarRating` is a controlled component.** It has no state of its own: it receives `value` and `onChange` as props and only reports clicks. The parent decides what the rating is. Clicking the current rating again clears it. Ratings live in `Gallery`, so they survive filtering.
+- **`Header`** has one piece of state, `menuOpen`, for the mobile menu. **`Contact`** has `documentary` (which radio is checked) and `sent`.
 
 ## Run it
-Open `index.html` in a browser.
+```
+npm install
+npm run dev      # start the dev server
+npm run build    # production build into dist/
+```
+
+## Backend note
+Ratings are kept in browser memory and reset on refresh, and the contact form only shows a thank-you message. The places that will change when a backend exists are marked with `BACKEND:` comments in `photos.js`, `Gallery.jsx`, `ratings.js` and `Contact.jsx`.
+
+## Assignment 1: plain HTML and CSS
+The first version (Week 1) was built with plain HTML5 and CSS3, no frameworks and no JavaScript: a CSS Grid gallery, a pop-up viewer using the `popover` attribute, and a contact form that revealed the documentary subject list with the CSS `:has()` selector. It is kept in git history under the tag `v1-html`.
 
 ## Credits
-Photos from [Unsplash](https://unsplash.com) via [Lorem Picsum](https://picsum.photos). Photo locations and descriptions are sample text.
+Photos are from [Unsplash](https://unsplash.com) (some via [Lorem Picsum](https://picsum.photos)). The three newest photos are by Steve Gribble ("Mesquite Flat" and "Storm Light") and Tim Arterbury ("Ridge of Fire"), used under the Unsplash License. Photo locations, descriptions and ratings are sample text.

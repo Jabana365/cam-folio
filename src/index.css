@@ -40,3 +40,17 @@
 @utility px-page {
   padding-inline: max(1rem, (100% - 1200px) / 2);
 }
+
+/* Shared look for text inputs, selects and textareas (Gallery search/sort, Contact form) */
+@utility field {
+  @apply rounded-md border border-border bg-surface px-3 py-2 text-text focus:outline-2 focus:outline-offset-1 focus:outline-accent;
+}
+
+/* Section titles (Gallery, About, Contact) and the main gold button (Hero, Gallery, Contact) */
+@utility section-title {
+  @apply mt-0 mb-6 font-heading text-[2rem] leading-tight font-normal;
+}
+
+@utility btn-primary {
+  @apply cursor-pointer rounded-md border-0 bg-accent px-6 py-3 font-bold text-bg transition-colors hover:bg-accent-dark focus-visible:bg-accent-dark;
+}

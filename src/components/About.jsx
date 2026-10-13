@@ -11,7 +11,7 @@ function About() {
         className="aspect-4/3 w-full rounded-md object-cover"
       />
       <div>
-        <h2 className="mt-0 mb-6 font-heading text-[2rem] leading-tight font-normal">About</h2>
+        <h2 className="section-title">About</h2>
         <p className="max-w-136 text-muted">
           I'm Abdalla K, a nature photographer who hikes for the shot. I chase quiet light in
           remote places and print every image myself.

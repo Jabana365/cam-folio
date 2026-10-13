@@ -16,7 +16,7 @@ function Hero() {
         </p>
         <a
           href="#gallery"
-          className="inline-block rounded-md bg-accent px-6 py-3 font-bold text-bg no-underline transition-colors duration-200 hover:bg-accent-dark focus-visible:bg-accent-dark"
+          className="btn-primary inline-block no-underline"
         >
           View the gallery
         </a>

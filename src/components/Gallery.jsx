@@ -7,9 +7,6 @@ import Lightbox from './Lightbox'
 // "All" plus each category found in the data, in first-seen order
 const categories = ['All', ...new Set(photos.map((photo) => photo.category))]
 
-const fieldClasses =
-  'rounded-md border border-border bg-surface px-3 py-2 text-text focus:outline-2 focus:outline-offset-1 focus:outline-accent'
-
 function Gallery() {
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
@@ -62,7 +59,7 @@ function Gallery() {
 
   return (
     <section id="gallery" className="px-page py-16">
-      <h2 className="mt-0 mb-6 font-heading text-[2rem] leading-tight font-normal">Gallery</h2>
+      <h2 className="section-title">Gallery</h2>
 
       <div className="mb-4 flex flex-wrap items-center gap-2">
         {categories.map((name) => (
@@ -89,13 +86,13 @@ function Gallery() {
           onChange={(event) => setSearch(event.target.value)}
           placeholder="Search photos"
           aria-label="Search photos"
-          className={`min-w-0 flex-1 sm:max-w-xs ${fieldClasses}`}
+          className="field min-w-0 flex-1 sm:max-w-xs"
         />
         <select
           value={sortBy}
           onChange={(event) => setSortBy(event.target.value)}
           aria-label="Sort photos"
-          className={fieldClasses}
+          className="field"
         >
           <option value="default">Sort: Featured</option>
           <option value="title">Title A-Z</option>
@@ -114,7 +111,7 @@ function Gallery() {
           <button
             type="button"
             onClick={clearFilters}
-            className="cursor-pointer rounded-md border-0 bg-accent px-6 py-2 font-bold text-bg hover:bg-accent-dark"
+            className="btn-primary"
           >
             Clear filters
           </button>
