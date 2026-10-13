@@ -35,3 +35,8 @@
     scroll-margin-top: 4rem;
   }
 }
+
+/* Side padding that keeps content within 1200px but lets backgrounds run full-bleed */
+@utility px-page {
+  padding-inline: max(1rem, (100% - 1200px) / 2);
+}
