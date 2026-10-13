@@ -1,4 +1,8 @@
 // All gallery photos live here; the Gallery renders one card per object.
+// ratingTotal / ratingCount are hardcoded stand-ins for the community's votes.
+// BACKEND: when a backend exists, these two numbers should come from the server
+// (sum of all users' ratings and number of ratings per photo). Only PhotoCard
+// reads these two fields, so that is the only place that needs to change.
 // `size` is optional: "wide" spans 2 columns and "tall" spans 2 rows on sm+ screens.
 export const photos = [
   {
@@ -9,6 +13,8 @@ export const photos = [
     location: 'Rogaland, Norway',
     description: 'Clear morning above the fjord after a two-hour climb.',
     category: 'Mountains',
+    ratingTotal: 46,
+    ratingCount: 10,
     size: 'wide',
   },
   {
@@ -19,6 +25,8 @@ export const photos = [
     location: 'Utah, USA',
     description: 'Last light catching the canyon rim before sunset.',
     category: 'Desert',
+    ratingTotal: 35,
+    ratingCount: 8,
   },
   {
     id: 3,
@@ -28,6 +36,8 @@ export const photos = [
     location: 'Washington, USA',
     description: 'A long exposure smooths the drop into the mossy gorge.',
     category: 'Water',
+    ratingTotal: 57,
+    ratingCount: 12,
     size: 'tall',
   },
   {
@@ -38,6 +48,8 @@ export const photos = [
     location: 'Isle of Skye, Scotland',
     description: 'Low cloud rolling over the ridge on a quiet road.',
     category: 'Mountains',
+    ratingTotal: 29,
+    ratingCount: 7,
   },
   {
     id: 5,
@@ -47,6 +59,8 @@ export const photos = [
     location: 'Khumbu, Nepal',
     description: 'Our tent the morning after fresh snow.',
     category: 'Mountains',
+    ratingTotal: 42,
+    ratingCount: 9,
   },
   {
     id: 6,
@@ -56,6 +70,8 @@ export const photos = [
     location: 'California, USA',
     description: 'Granite walls reflected in a calm river.',
     category: 'Water',
+    ratingTotal: 26,
+    ratingCount: 6,
   },
   {
     id: 7,
@@ -65,6 +81,8 @@ export const photos = [
     location: 'Soča Valley, Slovenia',
     description: 'Spring growth over a quiet stream.',
     category: 'Water',
+    ratingTotal: 48,
+    ratingCount: 11,
     size: 'wide',
   },
   {
@@ -75,6 +93,8 @@ export const photos = [
     location: 'Big Sur, USA',
     description: 'Sea stacks carved by the Pacific swell.',
     category: 'Coast',
+    ratingTotal: 33,
+    ratingCount: 8,
   },
   {
     id: 9,
@@ -84,5 +104,7 @@ export const photos = [
     location: 'British Columbia, Canada',
     description: 'Pines framing the bay on a still afternoon.',
     category: 'Coast',
+    ratingTotal: 43,
+    ratingCount: 10,
   },
 ]

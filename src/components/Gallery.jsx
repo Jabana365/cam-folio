@@ -7,9 +7,20 @@ const categories = ['All', ...new Set(photos.map((photo) => photo.category))]
 
 function Gallery() {
   const [category, setCategory] = useState('All')
+  // This user's own ratings, { photoId: 1-5 }. Owned here so they survive filtering.
+  // BACKEND: for now they live in browser memory and reset on refresh. Later, load the
+  // signed-in user's saved ratings here instead of starting empty.
+  const [ratings, setRatings] = useState({})
+
   // Derived on every render from the state above, never stored separately
   const visiblePhotos =
     category === 'All' ? photos : photos.filter((photo) => photo.category === category)
+
+  function handleRate(id, value) {
+    // Clicking the current rating again clears it
+    // BACKEND: also send the vote to the server here.
+    setRatings({ ...ratings, [id]: ratings[id] === value ? 0 : value })
+  }
 
   return (
     <section id="gallery" className="px-page py-16">
@@ -31,11 +42,19 @@ function Gallery() {
             {name}
           </button>
         ))}
+        <p className="m-0 w-full text-[.9rem] text-muted sm:ml-auto sm:w-auto">
+          ★ Love a shot? Tap the stars on any photo to rate it.
+        </p>
       </div>
 
       <div className="grid auto-rows-[260px] grid-flow-dense grid-cols-[repeat(auto-fill,minmax(min(260px,100%),1fr))] gap-4">
         {visiblePhotos.map((photo) => (
-          <PhotoCard key={photo.id} photo={photo} />
+          <PhotoCard
+            key={photo.id}
+            photo={photo}
+            rating={ratings[photo.id] ?? 0}
+            onRate={(value) => handleRate(photo.id, value)}
+          />
         ))}
       </div>
     </section>
