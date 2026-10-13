@@ -4,7 +4,9 @@ const STARS = [1, 2, 3, 4, 5]
 
 function StarRating({ value, onChange, label }) {
   return (
-    <div role="group" aria-label={`Rate ${label}`} className="flex">
+    // pointer-events-auto: the card caption around the stars ignores the mouse so a click
+    // on it opens the lightbox, but the stars themselves must stay clickable
+    <div role="group" aria-label={`Rate ${label}`} className="pointer-events-auto flex">
       {STARS.map((star) => {
         const filled = star <= value
         return (

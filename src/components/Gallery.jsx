@@ -1,20 +1,45 @@
 import { useState } from 'react'
 import { photos } from '../data/photos'
+import { getCommunityStats } from '../utils/ratings'
 import PhotoCard from './PhotoCard'
+import Lightbox from './Lightbox'
 
 // "All" plus each category found in the data, in first-seen order
 const categories = ['All', ...new Set(photos.map((photo) => photo.category))]
 
+const fieldClasses =
+  'rounded-md border border-border bg-surface px-3 py-2 text-text focus:outline-2 focus:outline-offset-1 focus:outline-accent'
+
 function Gallery() {
   const [category, setCategory] = useState('All')
+  const [search, setSearch] = useState('')
+  const [sortBy, setSortBy] = useState('default')
+  const [openIndex, setOpenIndex] = useState(null) // which visible photo the lightbox shows, or null
   // This user's own ratings, { photoId: 1-5 }. Owned here so they survive filtering.
   // BACKEND: for now they live in browser memory and reset on refresh. Later, load the
   // signed-in user's saved ratings here instead of starting empty.
   const [ratings, setRatings] = useState({})
 
-  // Derived on every render from the state above, never stored separately
-  const visiblePhotos =
-    category === 'All' ? photos : photos.filter((photo) => photo.category === category)
+  // Everything below is derived on every render from the state above, never stored separately.
+  // .filter() returns a new array, so sorting it in place never touches the original `photos`.
+  const query = search.trim().toLowerCase()
+  const visiblePhotos = photos.filter(
+    (photo) =>
+      (category === 'All' || photo.category === category) &&
+      `${photo.title} ${photo.location}`.toLowerCase().includes(query),
+  )
+
+  function averageOf(photo) {
+    return getCommunityStats(photo, ratings[photo.id] ?? 0).average
+  }
+
+  if (sortBy === 'title') {
+    visiblePhotos.sort((a, b) => a.title.localeCompare(b.title))
+  } else if (sortBy === 'location') {
+    visiblePhotos.sort((a, b) => a.location.localeCompare(b.location))
+  } else if (sortBy === 'rating') {
+    visiblePhotos.sort((a, b) => averageOf(b) - averageOf(a))
+  }
 
   function handleRate(id, value) {
     // Clicking the current rating again clears it
@@ -22,11 +47,24 @@ function Gallery() {
     setRatings({ ...ratings, [id]: ratings[id] === value ? 0 : value })
   }
 
+  function clearFilters() {
+    setCategory('All')
+    setSearch('')
+  }
+
+  // Lightbox navigation wraps around the currently visible photos
+  const total = visiblePhotos.length
+  const closeLightbox = () => setOpenIndex(null)
+  // The function form (index => ...) always starts from the latest value, even if a key
+  // is pressed again before React has re-rendered
+  const showPrev = () => setOpenIndex((index) => (index - 1 + total) % total)
+  const showNext = () => setOpenIndex((index) => (index + 1) % total)
+
   return (
     <section id="gallery" className="px-page py-16">
       <h2 className="mt-0 mb-6 font-heading text-[2rem] leading-tight font-normal">Gallery</h2>
 
-      <div className="mb-6 flex flex-wrap items-center gap-2">
+      <div className="mb-4 flex flex-wrap items-center gap-2">
         {categories.map((name) => (
           <button
             key={name}
@@ -42,21 +80,69 @@ function Gallery() {
             {name}
           </button>
         ))}
-        <p className="m-0 w-full text-[.9rem] text-muted sm:ml-auto sm:w-auto">
-          ★ Love a shot? Tap the stars on any photo to rate it.
-        </p>
       </div>
 
-      <div className="grid auto-rows-[260px] grid-flow-dense grid-cols-[repeat(auto-fill,minmax(min(260px,100%),1fr))] gap-4">
-        {visiblePhotos.map((photo) => (
-          <PhotoCard
-            key={photo.id}
-            photo={photo}
-            rating={ratings[photo.id] ?? 0}
-            onRate={(value) => handleRate(photo.id, value)}
-          />
-        ))}
+      <div className="mb-2 flex flex-wrap items-center gap-3">
+        <input
+          type="search"
+          value={search}
+          onChange={(event) => setSearch(event.target.value)}
+          placeholder="Search photos"
+          aria-label="Search photos"
+          className={`min-w-0 flex-1 sm:max-w-xs ${fieldClasses}`}
+        />
+        <select
+          value={sortBy}
+          onChange={(event) => setSortBy(event.target.value)}
+          aria-label="Sort photos"
+          className={fieldClasses}
+        >
+          <option value="default">Sort: Featured</option>
+          <option value="title">Title A-Z</option>
+          <option value="location">Location A-Z</option>
+          <option value="rating">Highest rated</option>
+        </select>
       </div>
+
+      <p className="mt-0 mb-6 text-[.9rem] text-muted">
+        Showing {total} of {photos.length} photos. ★ Love a shot? Tap the stars to rate it.
+      </p>
+
+      {total === 0 ? (
+        <div className="rounded-md border border-border bg-surface px-4 py-10 text-center">
+          <p className="mt-0 mb-4 text-muted">No photos match your search.</p>
+          <button
+            type="button"
+            onClick={clearFilters}
+            className="cursor-pointer rounded-md border-0 bg-accent px-6 py-2 font-bold text-bg hover:bg-accent-dark"
+          >
+            Clear filters
+          </button>
+        </div>
+      ) : (
+        <div className="grid auto-rows-[260px] grid-flow-dense grid-cols-[repeat(auto-fill,minmax(min(260px,100%),1fr))] gap-4">
+          {visiblePhotos.map((photo, index) => (
+            <PhotoCard
+              key={photo.id}
+              photo={photo}
+              rating={ratings[photo.id] ?? 0}
+              onRate={(value) => handleRate(photo.id, value)}
+              onOpen={() => setOpenIndex(index)}
+            />
+          ))}
+        </div>
+      )}
+
+      {openIndex !== null && (
+        <Lightbox
+          photo={visiblePhotos[openIndex]}
+          position={openIndex + 1}
+          total={total}
+          onClose={closeLightbox}
+          onPrev={showPrev}
+          onNext={showNext}
+        />
+      )}
     </section>
   )
 }
