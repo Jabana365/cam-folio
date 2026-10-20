@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { api } from '../lib/api'
 
 const shootTypes = ['Outdoor portrait', 'Adventure / travel', 'Print commission', 'Something else']
 
@@ -18,12 +19,28 @@ function Contact() {
   // The radios are controlled: React decides which one is checked.
   const [documentary, setDocumentary] = useState('no')
   const [sent, setSent] = useState(false)
+  const [error, setError] = useState('')
 
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
     event.preventDefault() // stop the browser reloading the page
-    // BACKEND: read the fields with new FormData(event.currentTarget) and send them to the
-    // server here instead of just showing a thank-you.
-    setSent(true)
+    const form = new FormData(event.currentTarget)
+    setError('')
+    try {
+      await api('/contact', {
+        method: 'POST',
+        body: {
+          name: form.get('name'),
+          email: form.get('email'),
+          shoot: form.get('shoot'),
+          documentary: form.get('documentary'),
+          docType: form.get('doc-type'),
+          message: form.get('message'),
+        },
+      })
+      setSent(true)
+    } catch (err) {
+      setError(err.message)
+    }
   }
 
   return (
@@ -122,6 +139,11 @@ function Contact() {
             <textarea id="message" name="message" rows={5} required className="field resize-y" />
           </div>
 
+          {error && (
+            <p role="alert" className="m-0 text-center text-[.9rem] text-red-400 sm:col-span-2">
+              {error}
+            </p>
+          )}
           <button
             type="submit"
             className="btn-primary justify-self-center sm:col-span-2"

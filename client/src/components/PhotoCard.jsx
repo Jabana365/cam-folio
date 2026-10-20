@@ -8,7 +8,7 @@ const sizeClasses = {
 }
 
 function PhotoCard({ photo, rating, onRate, onOpen }) {
-  const { average, count } = getCommunityStats(photo, rating)
+  const { average, count } = getCommunityStats(photo)
 
   return (
     <figure

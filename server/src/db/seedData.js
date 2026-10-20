@@ -1,9 +1,5 @@
-// All gallery photos live here; the Gallery renders one card per object.
-// ratingTotal / ratingCount are hardcoded stand-ins for the community's votes.
-// BACKEND: when a backend exists, these two numbers should come from the server
-// (sum of all users' ratings and number of ratings per photo). Only PhotoCard
-// reads these two fields, so that is the only place that needs to change.
-// `size` is optional: "wide" spans 2 columns and "tall" spans 2 rows on sm+ screens.
+// Original Week 2 photo data, used only by seed.js to fill the database.
+// ratingTotal / ratingCount become the starting "community" votes.
 export const photos = [
   {
     id: 1,

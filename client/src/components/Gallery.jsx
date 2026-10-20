@@ -1,21 +1,32 @@
-import { useState } from 'react'
-import { photos } from '../data/photos'
+import { useEffect, useState } from 'react'
+import { api } from '../lib/api'
+import { useSession } from '../lib/auth-client'
 import { getCommunityStats } from '../utils/ratings'
 import PhotoCard from './PhotoCard'
 import Lightbox from './Lightbox'
 
-// "All" plus each category found in the data, in first-seen order
-const categories = ['All', ...new Set(photos.map((photo) => photo.category))]
-
-function Gallery() {
+function Gallery({ onRequireAuth }) {
+  const { data: session } = useSession()
+  const userId = session?.user.id
+  const [photos, setPhotos] = useState([])
+  const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
   const [sortBy, setSortBy] = useState('default')
   const [openIndex, setOpenIndex] = useState(null) // which visible photo the lightbox shows, or null
-  // This user's own ratings, { photoId: 1-5 }. Owned here so they survive filtering.
-  // BACKEND: for now they live in browser memory and reset on refresh. Later, load the
-  // signed-in user's saved ratings here instead of starting empty.
-  const [ratings, setRatings] = useState({})
+
+  // Load photos from the API. Re-runs when the user signs in or out so myRating is right.
+  useEffect(() => {
+    api('/photos')
+      .then((data) => {
+        setPhotos(data)
+        setStatus('ready')
+      })
+      .catch(() => setStatus('error'))
+  }, [userId])
+
+  // "All" plus each category found in the data, in first-seen order
+  const categories = ['All', ...new Set(photos.map((photo) => photo.category))]
 
   // Everything below is derived on every render from the state above, never stored separately.
   // .filter() returns a new array, so sorting it in place never touches the original `photos`.
@@ -27,7 +38,7 @@ function Gallery() {
   )
 
   function averageOf(photo) {
-    return getCommunityStats(photo, ratings[photo.id] ?? 0).average
+    return getCommunityStats(photo).average
   }
 
   if (sortBy === 'title') {
@@ -38,10 +49,29 @@ function Gallery() {
     visiblePhotos.sort((a, b) => averageOf(b) - averageOf(a))
   }
 
-  function handleRate(id, value) {
+  async function handleRate(photo, value) {
+    if (!session) return onRequireAuth()
     // Clicking the current rating again clears it
-    // BACKEND: also send the vote to the server here.
-    setRatings({ ...ratings, [id]: ratings[id] === value ? 0 : value })
+    const next = photo.myRating === value ? 0 : value
+    try {
+      if (next === 0) await api(`/photos/${photo.id}/rating`, { method: 'DELETE' })
+      else await api(`/photos/${photo.id}/rating`, { method: 'PUT', body: { value: next } })
+    } catch {
+      return // keep the old rating if the save failed
+    }
+    // Mirror the change locally: swap this user's old vote for the new one
+    setPhotos((list) =>
+      list.map((p) =>
+        p.id === photo.id
+          ? {
+              ...p,
+              myRating: next,
+              ratingTotal: p.ratingTotal - p.myRating + next,
+              ratingCount: p.ratingCount - (p.myRating > 0 ? 1 : 0) + (next > 0 ? 1 : 0),
+            }
+          : p,
+      ),
+    )
   }
 
   function clearFilters() {
@@ -105,7 +135,11 @@ function Gallery() {
         Showing {total} of {photos.length} photos. ★ Love a shot? Tap the stars to rate it.
       </p>
 
-      {total === 0 ? (
+      {status === 'loading' ? (
+        <p className="text-muted">Loading photos…</p>
+      ) : status === 'error' ? (
+        <p role="alert" className="text-muted">Couldn't load photos. Please try again later.</p>
+      ) : total === 0 ? (
         <div className="rounded-md border border-border bg-surface px-4 py-10 text-center">
           <p className="mt-0 mb-4 text-muted">No photos match your search.</p>
           <button
@@ -122,8 +156,8 @@ function Gallery() {
             <PhotoCard
               key={photo.id}
               photo={photo}
-              rating={ratings[photo.id] ?? 0}
-              onRate={(value) => handleRate(photo.id, value)}
+              rating={photo.myRating}
+              onRate={(value) => handleRate(photo, value)}
               onOpen={() => setOpenIndex(index)}
             />
           ))}

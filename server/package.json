@@ -1,0 +1,21 @@
+{
+  "name": "cam-folio-server",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch --env-file=.env src/index.js",
+    "start": "node src/index.js",
+    "db:push": "drizzle-kit push",
+    "seed": "node --env-file=.env src/db/seed.js"
+  },
+  "dependencies": {
+    "better-auth": "^1.7.12",
+    "cors": "^2.8.6",
+    "drizzle-orm": "^0.45.4",
+    "express": "^5.3.0",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.11"
+  }
+}
