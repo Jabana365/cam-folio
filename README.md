@@ -2,51 +2,91 @@
 A single-page nature photography portfolio, rebuilt with **React, Vite and Tailwind CSS**. Week 2 assignment by Abdalla Elhassan, evolved from the Week 1 plain HTML/CSS site (see [Assignment 1](#assignment-1-plain-html-and-css)).
 
 ## Features
-- **Gallery** of 12 photos in four categories (Mountains, Desert, Waterfalls & Rivers, Coast), all rendered from one data file
-- **Category filter**: chip buttons built with `useState`
-- **Search and sort**: search by title or place, and sort by title, location or rating. All of it combines with the category filter
-- **Star rating**: a reusable, controlled `StarRating` on every photo. Each card shows a hardcoded community score and your own click adds to it
-- **Lightbox**: click a photo to see it larger, with previous/next buttons, arrow keys, Esc to close, and the photo's category
-- **Contact form**: the "documentary coverage" question is a controlled radio group, and the subject list only appears when "Yes" is picked
-- **Responsive, mobile-first**: Tailwind classes go from unprefixed (phone) to `sm:` (640px) and `md:` (900px). The header turns into a hamburger menu below 900px, and there is no horizontal scroll at any width
+- **Gallery** of 12 photos in four categories (Mountains, Desert, Waterfalls & Rivers, Coast), loaded from the API
+- **Category filter**, **search** (title or place) and **sort** (title, location, rating), all combinable
+- **Sign up / sign in**: real accounts and sessions. The header shows "Sign in" or "Hi, name · Sign out", and the session survives a page refresh
+- **Star rating**: signed-in users rate photos 1-5. Ratings are saved per user in the database and added to the community score
+- **Lightbox** with previous/next buttons, arrow keys and Esc
+- **Contact form**: submissions are stored in the database. The documentary subject list only appears when "Yes" is picked
+- **Responsive, mobile-first** with a hamburger menu below 900px
 
 ## Tech
-- [Vite](https://vite.dev) + [React](https://react.dev) (plain JavaScript, no TypeScript)
-- [Tailwind CSS](https://tailwindcss.com) v4, wired in with the Vite plugin. Colours and fonts are theme tokens in `src/index.css`
-- No other libraries. All data is hardcoded for now (a backend is planned for Week 3)
+- **Client:** [Vite](https://vite.dev) + [React](https://react.dev) + [Tailwind CSS](https://tailwindcss.com) v4 (plain JavaScript, no TypeScript)
+- **Server:** [Express](https://expressjs.com) (Node.js)
+- **Database:** Postgres on [Neon](https://neon.tech), accessed with [Drizzle ORM](https://orm.drizzle.team)
+- **Auth:** [Better Auth](https://www.better-auth.com) (email + password, sessions stored in Postgres, httpOnly cookie)
+- **Hosting:** Railway (API) and Vercel (client)
 
 ## Project structure
 ```
-src/
-  data/
-    photos.js        the 12 photos (title, location, category, rating numbers...)
-    navLinks.js      nav links shared by Header and Footer
-  components/
-    Header.jsx  Hero.jsx  Gallery.jsx  About.jsx  Contact.jsx  Footer.jsx
-    PhotoCard.jsx    one gallery card, used for every photo
-    StarRating.jsx   the reusable controlled component
-    Lightbox.jsx     full-size viewer
-    Logo.jsx  NavList.jsx
-  utils/
-    ratings.js       combines community votes with your own
-  App.jsx            puts the sections together
-  index.css          Tailwind import, theme tokens, shared utilities (field, btn-primary, section-title, px-page)
+client/                  React app (Vite)
+  src/components/        Header, Gallery, PhotoCard, StarRating, Lightbox, Contact, AuthModal ...
+  src/lib/api.js         fetch wrapper that sends the session cookie
+  src/lib/auth-client.js Better Auth client (useSession, signIn, signUp, signOut)
+  vercel.json            rewrites /api/* to the Railway server
+server/                  Express API
+  src/index.js           app setup: CORS, auth handler, routes
+  src/auth.js            Better Auth config
+  src/db/schema.js       database tables (Drizzle)
+  src/db/seed.js         fills the photos table (data in seedData.js)
+  src/routes/            photos.js (list + ratings), contact.js
 ```
 
-## How the state works
-- **`Gallery`** owns the state: `category`, `search`, `sortBy`, `ratings` and `openIndex` (which photo the lightbox shows). The list of visible photos is *derived* from that state on every render with `.filter()` and `.sort()`, never stored separately.
-- **`StarRating` is a controlled component.** It has no state of its own: it receives `value` and `onChange` as props and only reports clicks. The parent decides what the rating is. Clicking the current rating again clears it. Ratings live in `Gallery`, so they survive filtering.
-- **`Header`** has one piece of state, `menuOpen`, for the mobile menu. **`Contact`** has `documentary` (which radio is checked) and `sent`.
+## How it fits together
+The browser only ever talks to `/api/...` on its own site. In development, Vite forwards `/api` to the Express server on port 3000. In production, Vercel forwards `/api` to the Railway server. Because the browser sees one origin, the login cookie works without cross-site cookie settings.
 
-## Run it
+## Database schema (in plain English)
+- **user, session, account, verification**: created for Better Auth. `user` is a person with a name and email. `account` holds their hashed password. `session` is one row per logged-in browser, which is how you stay signed in after a refresh.
+- **photos**: one row per gallery photo (image path, title, location, description, category, optional size). `base_rating_total` and `base_rating_count` hold the original sample community votes from Week 2.
+- **ratings**: one row per (user, photo) with a value from 1 to 5. A user can rate a photo once, and can change or remove it. Deleting a user or photo deletes their ratings.
+- **contact_messages**: one row per contact form submission.
+
+A photo's displayed score is `(base_rating_total + sum of ratings) / (base_rating_count + number of ratings)`.
+
+## API
+| Method | Route | Auth | What it does |
+|---|---|---|---|
+| GET | `/api/health` | no | `{ ok: true }` |
+| GET | `/api/photos` | optional | All photos with rating totals, plus `myRating` if signed in |
+| PUT | `/api/photos/:id/rating` | yes | Save your 1-5 rating `{ value }` |
+| DELETE | `/api/photos/:id/rating` | yes | Remove your rating |
+| POST | `/api/contact` | no | Store a contact message |
+| * | `/api/auth/*` | - | Sign up, sign in, sign out, get session (Better Auth) |
+
+## Run it locally
+1. Create a free Postgres database on Neon and copy its pooled connection string.
+2. Create `server/.env` from `server/.env.example` and fill in the values:
+
+| Variable | Meaning |
+|---|---|
+| `DATABASE_URL` | Neon connection string |
+| `BETTER_AUTH_SECRET` | random secret (`openssl rand -base64 32`) |
+| `BETTER_AUTH_URL` | public URL of the API (`http://localhost:3000` locally) |
+| `CLIENT_ORIGIN` | where the React app runs (`http://localhost:5173` locally) |
+| `PORT` | optional, defaults to 3000 |
+
+`.env` files are listed in `.gitignore` and are never committed.
+
+3. Install, create the tables, and seed:
 ```
+cd server
 npm install
-npm run dev      # start the dev server
-npm run build    # production build into dist/
+npm run db:push    # create tables in Neon
+npm run seed       # insert the 12 photos
+npm run dev        # API on http://localhost:3000
+```
+4. In another terminal:
+```
+cd client
+npm install
+npm run dev        # http://localhost:5173
 ```
 
-## Backend note
-Ratings are kept in browser memory and reset on refresh, and the contact form only shows a thank-you message. The places that will change when a backend exists are marked with `BACKEND:` comments in `photos.js`, `Gallery.jsx`, `ratings.js` and `Contact.jsx`.
+## Deploy
+- **API (Railway):** new service from this repo, root directory `server`, start command `npm start`. Set `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and `CLIENT_ORIGIN` (both set to the Vercel URL, since the browser reaches the API through it).
+- **Client (Vercel):** root directory `client`. Put the Railway URL in `client/vercel.json`.
+
+Live site: _add URL here after deploying_
 
 ## Assignment 1: plain HTML and CSS
 The first version (Week 1) was built with plain HTML5 and CSS3, no frameworks and no JavaScript: a CSS Grid gallery, a pop-up viewer using the `popover` attribute, and a contact form that revealed the documentary subject list with the CSS `:has()` selector. It is kept in git history under the tag `v1-html`.
