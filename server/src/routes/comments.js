@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { and, desc, eq, gt, sql } from 'drizzle-orm'
+import { and, desc, eq, sql } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { comments, photos, user } from '../db/schema.js'
 import { getUser } from '../lib/getUser.js'
@@ -52,13 +52,16 @@ router.post('/photos/:id/comments', async (req, res) => {
   // otherwise spamming could be spread across photos.
   const result = await db.transaction(async (tx) => {
     await tx.execute(sql`select pg_advisory_xact_lock(hashtext(${me.id}))`)
+    // Compare inside the database so Node's clock and timezone never enter into it
     const [last] = await tx
-      .select({ createdAt: comments.createdAt })
+      .select({
+        wait: sql`ceil(extract(epoch from (${comments.createdAt} + ${COOLDOWN_MS} * interval '1 millisecond' - now())))`.mapWith(Number),
+      })
       .from(comments)
-      .where(and(eq(comments.userId, me.id), gt(comments.createdAt, new Date(Date.now() - COOLDOWN_MS))))
+      .where(and(eq(comments.userId, me.id), sql`${comments.createdAt} > now() - ${COOLDOWN_MS} * interval '1 millisecond'`))
       .orderBy(desc(comments.createdAt))
       .limit(1)
-    if (last) return { wait: Math.max(1, Math.ceil((last.createdAt.getTime() + COOLDOWN_MS - Date.now()) / 1000)) }
+    if (last) return { wait: Math.max(1, last.wait) }
     const [inserted] = await tx.insert(comments).values({ userId: me.id, photoId, body }).returning()
     return { row: inserted }
   })
