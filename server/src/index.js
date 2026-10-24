@@ -1,13 +1,13 @@
 import express from 'express'
 import cors from 'cors'
 import { toNodeHandler } from 'better-auth/node'
-import { auth } from './auth.js'
+import { auth, clientOrigins } from './auth.js'
 import photosRouter from './routes/photos.js'
 import contactRouter from './routes/contact.js'
 
 const app = express()
 
-app.use(cors({ origin: process.env.CLIENT_ORIGIN, credentials: true }))
+app.use(cors({ origin: clientOrigins, credentials: true }))
 
 // Better Auth must be mounted before express.json()
 app.all('/api/auth/{*splat}', toNodeHandler(auth))
