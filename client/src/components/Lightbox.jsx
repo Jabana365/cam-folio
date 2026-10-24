@@ -6,10 +6,10 @@ function Lightbox({ photo, position, total, onClose, onPrev, onNext, onRequireAu
   // The cleanup function undoes both when it closes.
   useEffect(() => {
     function handleKey(event) {
-      // Let arrows / Esc work normally while typing a comment
+      if (event.key === 'Escape') return onClose()
+      // Arrows move the caret while typing a comment, so they only navigate elsewhere
       if (event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT') return
-      if (event.key === 'Escape') onClose()
-      else if (event.key === 'ArrowLeft') onPrev()
+      if (event.key === 'ArrowLeft') onPrev()
       else if (event.key === 'ArrowRight') onNext()
     }
     window.addEventListener('keydown', handleKey)
@@ -59,7 +59,7 @@ function Lightbox({ photo, position, total, onClose, onPrev, onNext, onRequireAu
             </button>
           </div>
         </div>
-        <Comments photoId={photo.id} onRequireAuth={onRequireAuth} />
+        <Comments key={photo.id} photoId={photo.id} onRequireAuth={onRequireAuth} />
       </div>
     </div>
   )

@@ -4,7 +4,7 @@ import { useSession } from '../lib/auth-client'
 
 function Comments({ photoId, onRequireAuth }) {
   const { data: session } = useSession()
-  const userId = session?.user.id
+  const userId = session?.user?.id
   const [comments, setComments] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [text, setText] = useState('')
@@ -13,13 +13,18 @@ function Comments({ photoId, onRequireAuth }) {
 
   // Reload when the photo changes or the user signs in/out (so "mine" is right)
   useEffect(() => {
+    let cancelled = false // ignore a slow response once the photo or user has changed
     setStatus('loading')
     api(`/photos/${photoId}/comments`)
       .then((data) => {
+        if (cancelled) return
         setComments(data)
         setStatus('ready')
       })
-      .catch(() => setStatus('error'))
+      .catch(() => !cancelled && setStatus('error'))
+    return () => {
+      cancelled = true
+    }
   }, [photoId, userId])
 
   async function handleSubmit(event) {
@@ -84,7 +89,7 @@ function Comments({ photoId, onRequireAuth }) {
           </ul>
         )}
       </div>
-      {session ? (
+      {session && status === 'ready' ? (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2">
           <textarea
             value={text}
@@ -102,11 +107,11 @@ function Comments({ photoId, onRequireAuth }) {
             </button>
           </div>
         </form>
-      ) : (
+      ) : !session ? (
         <button type="button" onClick={() => onRequireAuth('comment')} className="btn-primary self-start">
           Sign in to comment
         </button>
-      )}
+      ) : null}
       {error && <p role="alert" className="m-0 text-[.9rem] text-red-400">{error}</p>}
 
     </section>

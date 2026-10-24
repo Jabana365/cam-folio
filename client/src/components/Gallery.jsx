@@ -7,14 +7,14 @@ import Lightbox from './Lightbox'
 
 function Gallery({ onRequireAuth }) {
   const { data: session } = useSession()
-  const userId = session?.user.id
+  const userId = session?.user?.id
   const [photos, setPhotos] = useState([])
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
   const [view, setView] = useState('all') // 'all' | 'mine' (only photos the user rated)
   const [sortBy, setSortBy] = useState('default')
-  const [openIndex, setOpenIndex] = useState(null) // which visible photo the lightbox shows, or null
+  const [openId, setOpenId] = useState(null) // id of the photo the lightbox shows, or null
 
   // Load photos from the API. Re-runs when the user signs in or out so myRating is right.
   useEffect(() => {
@@ -86,11 +86,13 @@ function Gallery({ onRequireAuth }) {
 
   // Lightbox navigation wraps around the currently visible photos
   const total = visiblePhotos.length
-  const closeLightbox = () => setOpenIndex(null)
+  // Find the open photo by id so filtering or un-rating can't leave a stale index behind
+  const openIndex = openId === null ? -1 : visiblePhotos.findIndex((p) => p.id === openId)
+  const closeLightbox = () => setOpenId(null)
   // The function form (index => ...) always starts from the latest value, even if a key
   // is pressed again before React has re-rendered
-  const showPrev = () => setOpenIndex((index) => (index - 1 + total) % total)
-  const showNext = () => setOpenIndex((index) => (index + 1) % total)
+  const showPrev = () => setOpenId(visiblePhotos[(openIndex - 1 + total) % total].id)
+  const showNext = () => setOpenId(visiblePhotos[(openIndex + 1) % total].id)
 
   return (
     <section id="gallery" className="px-page py-16">
@@ -179,19 +181,19 @@ function Gallery({ onRequireAuth }) {
         </div>
       ) : (
         <div className="grid auto-rows-[260px] grid-flow-dense grid-cols-[repeat(auto-fill,minmax(min(260px,100%),1fr))] gap-4">
-          {visiblePhotos.map((photo, index) => (
+          {visiblePhotos.map((photo) => (
             <PhotoCard
               key={photo.id}
               photo={photo}
               rating={photo.myRating}
               onRate={(value) => handleRate(photo, value)}
-              onOpen={() => setOpenIndex(index)}
+              onOpen={() => setOpenId(photo.id)}
             />
           ))}
         </div>
       )}
 
-      {openIndex !== null && (
+      {openIndex !== -1 && (
         <Lightbox
           photo={visiblePhotos[openIndex]}
           position={openIndex + 1}

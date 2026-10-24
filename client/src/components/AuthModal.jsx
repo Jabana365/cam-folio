@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { signIn, signUp } from '../lib/auth-client'
 
 const labelClasses = 'text-[.9rem] text-muted'
@@ -28,6 +28,18 @@ function AuthModal({ reason, onClose }) {
     if (error) setError(error.message || 'Something went wrong')
     else onClose()
   }
+
+  // Esc closes this modal. Capture phase + stopPropagation keeps Esc and the arrow keys
+  // from also closing or navigating the lightbox underneath.
+  useEffect(() => {
+    function handleKey(event) {
+      if (!['Escape', 'ArrowLeft', 'ArrowRight'].includes(event.key)) return
+      event.stopPropagation()
+      if (event.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleKey, true)
+    return () => window.removeEventListener('keydown', handleKey, true)
+  }, [onClose])
 
   function choose(next) {
     setMode(next)
