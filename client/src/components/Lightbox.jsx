@@ -1,10 +1,13 @@
 import { useEffect } from 'react'
+import Comments from './Comments'
 
-function Lightbox({ photo, position, total, onClose, onPrev, onNext }) {
+function Lightbox({ photo, position, total, onClose, onPrev, onNext, onRequireAuth }) {
   // Keyboard shortcuts and page-scroll lock while the lightbox is open.
   // The cleanup function undoes both when it closes.
   useEffect(() => {
     function handleKey(event) {
+      // Let arrows / Esc work normally while typing a comment
+      if (event.target.tagName === 'TEXTAREA' || event.target.tagName === 'INPUT') return
       if (event.key === 'Escape') onClose()
       else if (event.key === 'ArrowLeft') onPrev()
       else if (event.key === 'ArrowRight') onNext()
@@ -31,9 +34,9 @@ function Lightbox({ photo, position, total, onClose, onPrev, onNext }) {
     >
       <div
         onClick={(event) => event.stopPropagation()}
-        className="flex max-h-[92vh] w-[min(92vw,1100px)] flex-col overflow-hidden rounded-md bg-surface"
+        className="flex max-h-[92vh] w-[min(92vw,1100px)] flex-col overflow-y-auto rounded-md bg-surface"
       >
-        <img src={photo.src} alt={photo.alt} className="max-h-[75vh] min-h-0 w-full bg-black object-contain" />
+        <img src={photo.src} alt={photo.alt} className="max-h-[55vh] min-h-0 w-full shrink-0 bg-black object-contain" />
         <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-3">
           <p className="m-0 font-heading text-[1.1rem]">
             {photo.title} <span className="font-body text-[.9rem] text-accent">· {photo.location}</span>
@@ -56,6 +59,7 @@ function Lightbox({ photo, position, total, onClose, onPrev, onNext }) {
             </button>
           </div>
         </div>
+        <Comments photoId={photo.id} onRequireAuth={onRequireAuth} />
       </div>
     </div>
   )

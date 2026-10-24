@@ -3,7 +3,14 @@ import { signIn, signUp } from '../lib/auth-client'
 
 const labelClasses = 'text-[.9rem] text-muted'
 
-function AuthModal({ onClose }) {
+const reasonText = {
+  rate: 'Rate photos and see how your scores stack up against the community.',
+  comment: 'Join the conversation and leave a comment on this photo.',
+}
+
+function AuthModal({ reason, onClose }) {
+  // When opened from a locked action, show a short invitation before the form
+  const [step, setStep] = useState(reason ? 'prompt' : 'form') // 'prompt' or 'form'
   const [mode, setMode] = useState('signin') // 'signin' or 'signup'
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
@@ -22,9 +29,52 @@ function AuthModal({ onClose }) {
     else onClose()
   }
 
+  function choose(next) {
+    setMode(next)
+    setStep('form')
+  }
+
+  if (step === 'prompt') {
+    return (
+      <div className="fixed inset-0 z-30 flex items-center justify-center bg-black/70 p-4" onClick={onClose}>
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="Sign in required"
+          onClick={(event) => event.stopPropagation()}
+          className="w-full max-w-sm rounded-md border border-border bg-surface p-6 text-center"
+        >
+          <h2 className="section-title mb-2 text-[1.5rem]">
+            {reason === 'comment' ? 'Sign in to comment' : 'Sign in to rate'}
+          </h2>
+          <p className="mt-0 mb-5 text-muted">{reasonText[reason]}</p>
+          <div className="flex flex-col gap-2">
+            <button type="button" onClick={() => choose('signup')} autoFocus className="btn-primary">
+              Create a free account
+            </button>
+            <button
+              type="button"
+              onClick={() => choose('signin')}
+              className="cursor-pointer rounded-md border border-border bg-transparent px-4 py-2 text-text hover:border-accent hover:text-accent"
+            >
+              I already have an account
+            </button>
+            <button
+              type="button"
+              onClick={onClose}
+              className="cursor-pointer border-0 bg-transparent p-1 text-[.9rem] text-muted underline"
+            >
+              Not now
+            </button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div
-      className="fixed inset-0 z-20 flex items-center justify-center bg-black/70 p-4"
+      className="fixed inset-0 z-30 flex items-center justify-center bg-black/70 p-4"
       onClick={onClose}
     >
       <div
@@ -48,7 +98,7 @@ function AuthModal({ onClose }) {
           </div>
           <div className="flex flex-col gap-1.5">
             <label htmlFor="auth-password" className={labelClasses}>Password</label>
-            <input id="auth-password" name="password" type="password" required minLength={8} className="field" />
+            <input id="auth-password" name="password" type="password" autoComplete={mode === 'signup' ? 'new-password' : 'current-password'} required minLength={8} className="field" />
           </div>
           {error && <p role="alert" className="m-0 text-[.9rem] text-red-400">{error}</p>}
           <button type="submit" disabled={busy} className="btn-primary">

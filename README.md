@@ -7,6 +7,8 @@ A single-page nature photography portfolio, rebuilt with **React, Vite and Tailw
 - **Sign up / sign in**: real accounts and sessions. The header shows "Sign in" or "Hi, name · Sign out", and the session survives a page refresh
 - **Star rating**: signed-in users rate photos 1-5. Ratings are saved per user in the database and added to the community score
 - **Lightbox** with previous/next buttons, arrow keys and Esc
+- **Comments**: signed-in users can comment on a photo from the lightbox and delete their own comments. Anyone can read them
+- **My ratings filter**: signed-in users can switch the gallery to only the photos they have rated, and back to all photos
 - **Contact form**: submissions are stored in the database. The documentary subject list only appears when "Yes" is picked
 - **Responsive, mobile-first** with a hamburger menu below 900px
 
@@ -39,6 +41,7 @@ The browser only ever talks to `/api/...` on its own site. In development, Vite 
 - **user, session, account, verification**: created for Better Auth. `user` is a person with a name and email. `account` holds their hashed password. `session` is one row per logged-in browser, which is how you stay signed in after a refresh.
 - **photos**: one row per gallery photo (image path, title, location, description, category, optional size). `base_rating_total` and `base_rating_count` hold the original sample community votes from Week 2.
 - **ratings**: one row per (user, photo) with a value from 1 to 5. A user can rate a photo once, and can change or remove it. Deleting a user or photo deletes their ratings.
+- **comments**: one row per comment (user, photo, text up to 500 characters, time). Only the author can delete a comment. Deleting a user or photo deletes their comments.
 - **contact_messages**: one row per contact form submission.
 
 A photo's displayed score is `(base_rating_total + sum of ratings) / (base_rating_count + number of ratings)`.
@@ -50,6 +53,9 @@ A photo's displayed score is `(base_rating_total + sum of ratings) / (base_ratin
 | GET | `/api/photos` | optional | All photos with rating totals, plus `myRating` if signed in |
 | PUT | `/api/photos/:id/rating` | yes | Save your 1-5 rating `{ value }` |
 | DELETE | `/api/photos/:id/rating` | yes | Remove your rating |
+| GET | `/api/photos/:id/comments` | optional | Comments on a photo, newest first (`mine` is true for your own) |
+| POST | `/api/photos/:id/comments` | yes | Add a comment `{ body }` (1-500 characters) |
+| DELETE | `/api/comments/:id` | yes | Delete your own comment |
 | POST | `/api/contact` | no | Store a contact message |
 | * | `/api/auth/*` | - | Sign up, sign in, sign out, get session (Better Auth) |
 

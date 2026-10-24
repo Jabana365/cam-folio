@@ -1,16 +1,10 @@
 import { Router } from 'express'
-import { fromNodeHeaders } from 'better-auth/node'
 import { sql, eq, and } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { photos, ratings } from '../db/schema.js'
-import { auth } from '../auth.js'
+import { getUser } from '../lib/getUser.js'
 
 const router = Router()
-
-async function getUser(req) {
-  const session = await auth.api.getSession({ headers: fromNodeHeaders(req.headers) })
-  return session?.user ?? null
-}
 
 // GET /api/photos -> every photo with community totals (+ the caller's own rating)
 router.get('/', async (req, res) => {

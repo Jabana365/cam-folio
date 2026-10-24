@@ -77,6 +77,15 @@ export const ratings = pgTable(
   (t) => [unique().on(t.userId, t.photoId), check('value_1_to_5', sql`${t.value} between 1 and 5`)],
 )
 
+// Comments left on a photo by signed-in users.
+export const comments = pgTable('comments', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  photoId: integer('photo_id').notNull().references(() => photos.id, { onDelete: 'cascade' }),
+  body: text('body').notNull(),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
 // Messages sent through the contact form.
 export const contactMessages = pgTable('contact_messages', {
   id: serial('id').primaryKey(),

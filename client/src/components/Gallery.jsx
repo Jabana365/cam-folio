@@ -12,6 +12,7 @@ function Gallery({ onRequireAuth }) {
   const [status, setStatus] = useState('loading') // 'loading' | 'ready' | 'error'
   const [category, setCategory] = useState('All')
   const [search, setSearch] = useState('')
+  const [view, setView] = useState('all') // 'all' | 'mine' (only photos the user rated)
   const [sortBy, setSortBy] = useState('default')
   const [openIndex, setOpenIndex] = useState(null) // which visible photo the lightbox shows, or null
 
@@ -26,6 +27,8 @@ function Gallery({ onRequireAuth }) {
   }, [userId])
 
   // "All" plus each category found in the data, in first-seen order
+  // Signed-out users always see everything
+  const showMine = view === 'mine' && Boolean(session)
   const categories = ['All', ...new Set(photos.map((photo) => photo.category))]
 
   // Everything below is derived on every render from the state above, never stored separately.
@@ -33,6 +36,7 @@ function Gallery({ onRequireAuth }) {
   const query = search.trim().toLowerCase()
   const visiblePhotos = photos.filter(
     (photo) =>
+      (!showMine || photo.myRating > 0) &&
       (category === 'All' || photo.category === category) &&
       `${photo.title} ${photo.location}`.toLowerCase().includes(query),
   )
@@ -50,7 +54,7 @@ function Gallery({ onRequireAuth }) {
   }
 
   async function handleRate(photo, value) {
-    if (!session) return onRequireAuth()
+    if (!session) return onRequireAuth('rate')
     // Clicking the current rating again clears it
     const next = photo.myRating === value ? 0 : value
     try {
@@ -77,6 +81,7 @@ function Gallery({ onRequireAuth }) {
   function clearFilters() {
     setCategory('All')
     setSearch('')
+    setView('all')
   }
 
   // Lightbox navigation wraps around the currently visible photos
@@ -108,6 +113,26 @@ function Gallery({ onRequireAuth }) {
           </button>
         ))}
       </div>
+
+      {session && (
+        <div className="mb-4 flex flex-wrap items-center gap-2">
+          {[['all', 'All photos'], ['mine', 'My ratings']].map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setView(key)}
+              aria-pressed={view === key}
+              className={`cursor-pointer rounded-full border px-4 py-1 text-[.9rem] transition-colors ${
+                view === key
+                  ? 'border-accent bg-accent font-bold text-bg'
+                  : 'border-border bg-transparent text-text hover:border-accent hover:text-accent'
+              }`}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <div className="mb-2 flex flex-wrap items-center gap-3">
         <input
@@ -141,7 +166,9 @@ function Gallery({ onRequireAuth }) {
         <p role="alert" className="text-muted">Couldn't load photos. Please try again later.</p>
       ) : total === 0 ? (
         <div className="rounded-md border border-border bg-surface px-4 py-10 text-center">
-          <p className="mt-0 mb-4 text-muted">No photos match your search.</p>
+          <p className="mt-0 mb-4 text-muted">
+            {showMine ? "You haven't rated any photos that match yet." : 'No photos match your search.'}
+          </p>
           <button
             type="button"
             onClick={clearFilters}
@@ -172,6 +199,7 @@ function Gallery({ onRequireAuth }) {
           onClose={closeLightbox}
           onPrev={showPrev}
           onNext={showNext}
+          onRequireAuth={onRequireAuth}
         />
       )}
     </section>

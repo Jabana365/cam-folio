@@ -9,18 +9,19 @@ import AuthModal from './components/AuthModal'
 
 function App() {
   const [authOpen, setAuthOpen] = useState(false)
+  const [authReason, setAuthReason] = useState(null) // 'rate' | 'comment' | null
 
   return (
     <>
-      <Header onSignIn={() => setAuthOpen(true)} />
+      <Header onSignIn={() => { setAuthReason(null); setAuthOpen(true) }} />
       <main>
         <Hero />
-        <Gallery onRequireAuth={() => setAuthOpen(true)} />
+        <Gallery onRequireAuth={(reason) => { setAuthReason(reason); setAuthOpen(true) }} />
         <About />
         <Contact />
       </main>
       <Footer />
-      {authOpen && <AuthModal onClose={() => setAuthOpen(false)} />}
+      {authOpen && <AuthModal reason={authReason} onClose={() => setAuthOpen(false)} />}
     </>
   )
 }
