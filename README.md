@@ -15,7 +15,7 @@ A single-page nature photography portfolio, rebuilt with **React, Vite and Tailw
 - **Server:** [Express](https://expressjs.com) (Node.js)
 - **Database:** Postgres on [Neon](https://neon.tech), accessed with [Drizzle ORM](https://orm.drizzle.team)
 - **Auth:** [Better Auth](https://www.better-auth.com) (email + password, sessions stored in Postgres, httpOnly cookie)
-- **Hosting:** Railway (API) and Vercel (client)
+- **Hosting:** Render (API; moved from Railway, which paused deployments) and Vercel (client)
 
 ## Project structure
 ```
@@ -23,7 +23,7 @@ client/                  React app (Vite)
   src/components/        Header, Gallery, PhotoCard, StarRating, Lightbox, Contact, AuthModal ...
   src/lib/api.js         fetch wrapper that sends the session cookie
   src/lib/auth-client.js Better Auth client (useSession, signIn, signUp, signOut)
-  vercel.json            rewrites /api/* to the Railway server
+  vercel.json            rewrites /api/* to the Render server
 server/                  Express API
   src/index.js           app setup: CORS, auth handler, routes
   src/auth.js            Better Auth config
@@ -33,7 +33,7 @@ server/                  Express API
 ```
 
 ## How it fits together
-The browser only ever talks to `/api/...` on its own site. In development, Vite forwards `/api` to the Express server on port 3000. In production, Vercel forwards `/api` to the Railway server. Because the browser sees one origin, the login cookie works without cross-site cookie settings.
+The browser only ever talks to `/api/...` on its own site. In development, Vite forwards `/api` to the Express server on port 3000. In production, Vercel forwards `/api` to the Render server. Because the browser sees one origin, the login cookie works without cross-site cookie settings.
 
 ## Database schema (in plain English)
 - **user, session, account, verification**: created for Better Auth. `user` is a person with a name and email. `account` holds their hashed password. `session` is one row per logged-in browser, which is how you stay signed in after a refresh.
@@ -83,8 +83,8 @@ npm run dev        # http://localhost:5173
 ```
 
 ## Deploy
-- **API (Railway):** new service from this repo, root directory `server`, start command `npm start`. Set `DATABASE_URL`, `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL` and `CLIENT_ORIGIN` (both set to the Vercel URL, since the browser reaches the API through it).
-- **Client (Vercel):** root directory `client`. Put the Railway URL in `client/vercel.json`.
+- **API (Render):** New > Blueprint from this repo (uses `render.yaml`: root directory `server`, start command `npm start`, health check `/api/health`). Set `DATABASE_URL`, `BETTER_AUTH_URL` and `CLIENT_ORIGIN` (both set to the Vercel URL, since the browser reaches the API through it). `BETTER_AUTH_SECRET` is generated automatically.
+- **Client (Vercel):** root directory `client`. Put the Render URL in `client/vercel.json`.
 
 Live site: _add URL here after deploying_
 
