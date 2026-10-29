@@ -42,17 +42,15 @@ const finishes = [
   { name: 'Gloss', description: 'High-contrast finish with deeper blacks.', priceCents: 1000 },
 ]
 
-for (const [i, s] of sizes.entries()) {
-  const row = { ...s, sortOrder: i }
-  await db.insert(printSizes).values(row).onConflictDoUpdate({ target: printSizes.label, set: row })
+// The list order becomes the display order
+async function upsertOptions(table, target, rows) {
+  for (const [i, option] of rows.entries()) {
+    const row = { ...option, sortOrder: i }
+    await db.insert(table).values(row).onConflictDoUpdate({ target, set: row })
+  }
 }
-for (const [i, f] of frames.entries()) {
-  const row = { ...f, sortOrder: i }
-  await db.insert(printFrames).values(row).onConflictDoUpdate({ target: printFrames.name, set: row })
-}
-for (const [i, f] of finishes.entries()) {
-  const row = { ...f, sortOrder: i }
-  await db.insert(printFinishes).values(row).onConflictDoUpdate({ target: printFinishes.name, set: row })
-}
+await upsertOptions(printSizes, printSizes.label, sizes)
+await upsertOptions(printFrames, printFrames.name, frames)
+await upsertOptions(printFinishes, printFinishes.name, finishes)
 console.log(`Seeded ${sizes.length} sizes, ${frames.length} frames, ${finishes.length} finishes`)
 await pool.end()

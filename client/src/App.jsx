@@ -1,35 +1,20 @@
-import { useEffect, useState } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router'
+import { useState } from 'react'
+import { Navigate, Route, Routes } from 'react-router'
 import Header from './components/Header'
 import Footer from './components/Footer'
 import AuthModal from './components/AuthModal'
+import ScrollToHash from './components/ScrollToHash'
 import Home from './pages/Home'
 import PrintPage from './pages/PrintPage'
 import OrderPage from './pages/OrderPage'
 import OrdersPage from './pages/OrdersPage'
 
-// Pages are separate routes now, so a link like /#gallery has to scroll by hand,
-// and moving to a new page should start at the top.
-function ScrollToHash() {
-  const { hash, key } = useLocation()
-  useEffect(() => {
-    const target = hash && document.getElementById(hash.slice(1))
-    if (target) target.scrollIntoView()
-    else window.scrollTo(0, 0)
-  }, [hash, key])
-  return null
-}
-
 function App() {
-  const [authOpen, setAuthOpen] = useState(false)
-  const [authReason, setAuthReason] = useState(null) // 'rate' | 'comment' | 'buy' | null
-  const [afterAuth, setAfterAuth] = useState(null) // { run } to call once sign-in succeeds
+  // null while the sign-in popup is closed, otherwise why it opened and what to do after
+  // a successful sign-in. reason is 'rate' | 'comment' | 'buy' | null.
+  const [auth, setAuth] = useState(null)
   // onSuccess is optional: the Buy button uses it to carry on to checkout after signing in
-  const requireAuth = (reason, onSuccess) => {
-    setAuthReason(reason)
-    setAfterAuth(onSuccess ? { run: onSuccess } : null)
-    setAuthOpen(true)
-  }
+  const requireAuth = (reason, onSuccess) => setAuth({ reason, onSuccess })
 
   return (
     <>
@@ -45,7 +30,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      {authOpen && <AuthModal reason={authReason} onSuccess={afterAuth?.run} onClose={() => setAuthOpen(false)} />}
+      {auth && <AuthModal reason={auth.reason} onSuccess={auth.onSuccess} onClose={() => setAuth(null)} />}
     </>
   )
 }

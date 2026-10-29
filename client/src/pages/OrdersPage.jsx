@@ -2,8 +2,10 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router'
 import { api } from '../lib/api'
 import { useSession } from '../lib/auth-client'
+import { formatDate } from '../utils/date'
 import { formatPrice } from '../utils/money'
 import OrderItems from '../components/OrderItems'
+import SignInPrompt from '../components/SignInPrompt'
 import StatusBadge from '../components/StatusBadge'
 
 function OrdersPage({ onRequireAuth }) {
@@ -24,13 +26,7 @@ function OrdersPage({ onRequireAuth }) {
 
   if (isPending) return <p className="px-page py-16 text-muted">Loading…</p>
   if (!session) {
-    return (
-      <section className="px-page py-16">
-        <h1 className="section-title">My orders</h1>
-        <p className="text-muted">Sign in to see your orders.</p>
-        <button type="button" onClick={() => onRequireAuth(null)} className="btn-primary">Sign in</button>
-      </section>
-    )
+    return <SignInPrompt title="My orders" message="Sign in to see your orders." onSignIn={() => onRequireAuth(null)} />
   }
 
   return (
@@ -55,9 +51,7 @@ function OrdersPage({ onRequireAuth }) {
                   </Link>
                   <StatusBadge status={order.status} />
                 </div>
-                <p className="mt-0 mb-3 text-[.85rem] text-muted">
-                  {new Date(order.createdAt).toLocaleDateString(undefined, { dateStyle: 'medium' })}
-                </p>
+                <p className="mt-0 mb-3 text-[.85rem] text-muted">{formatDate(order.createdAt)}</p>
                 <OrderItems items={order.items} />
                 <p className="mt-2 mb-0 border-t border-border pt-3 text-right">
                   <span className="mr-3 text-muted">Total</span>

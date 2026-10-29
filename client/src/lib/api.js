@@ -8,7 +8,8 @@ export async function api(path, { method = 'GET', body } = {}) {
   })
   if (!res.ok) {
     const data = await res.json().catch(() => ({}))
-    throw new Error(data.error || `Request failed (${res.status})`)
+    // Keep the HTTP status so callers can tell 404 from 401 without reading the message
+    throw Object.assign(new Error(data.error || `Request failed (${res.status})`), { status: res.status })
   }
   return res.status === 204 ? null : res.json()
 }

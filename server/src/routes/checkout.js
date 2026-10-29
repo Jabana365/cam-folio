@@ -13,6 +13,10 @@ const MAX_QUANTITY = 10
 const SESSION_LIFETIME_S = 31 * 60 // Stripe's minimum is 30 minutes
 const SHIP_TO = ['US', 'CA', 'GB', 'AU', 'IE', 'DE', 'FR', 'NL', 'ES', 'IT', 'SE', 'NO', 'DK']
 
+// A shop option (size, frame or finish) by id, only if it is still on sale
+const findActive = (table, id) =>
+  db.select().from(table).where(and(eq(table.id, id), eq(table.active, true)))
+
 // POST /api/checkout  { photoId, sizeId, frameId, finishId, quantity }  (signed-in only)
 // The browser only says WHAT it wants. The price is always looked up here.
 router.post('/', requireUser, async (req, res) => {
@@ -29,10 +33,10 @@ router.post('/', requireUser, async (req, res) => {
   }
 
   const [[photo], [size], [frame], [finish]] = await Promise.all([
-    db.select().from(photos).where(eq(photos.id, photoId)),
-    db.select().from(printSizes).where(and(eq(printSizes.id, sizeId), eq(printSizes.active, true))),
-    db.select().from(printFrames).where(and(eq(printFrames.id, frameId), eq(printFrames.active, true))),
-    db.select().from(printFinishes).where(and(eq(printFinishes.id, finishId), eq(printFinishes.active, true))),
+    db.select({ title: photos.title, src: photos.src }).from(photos).where(eq(photos.id, photoId)),
+    findActive(printSizes, sizeId),
+    findActive(printFrames, frameId),
+    findActive(printFinishes, finishId),
   ])
   if (!photo) return res.status(404).json({ error: 'Photo not found' })
   if (!size || !frame || !finish) return res.status(400).json({ error: 'That option is no longer available' })

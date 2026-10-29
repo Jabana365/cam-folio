@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router'
 import { api } from '../lib/api'
 import { useSession } from '../lib/auth-client'
-import { formatPrice } from '../utils/money'
+import { formatAddOn, formatPrice } from '../utils/money'
 
 const MAX_QUANTITY = 10
 
@@ -38,33 +38,36 @@ function Preview({ photo, frame }) {
   )
 }
 
-function Group({ title, children }) {
+// One row of choices (size, frame or finish). Frames and finishes use the defaults;
+// sizes pass their own name and price because they are not add-ons.
+function OptionGroup({ title, items, selectedId, onSelect, nameOf = (i) => i.name, priceOf = (i) => formatAddOn(i.priceCents) }) {
   return (
     <fieldset className="m-0 mb-6 border-0 p-0">
       <legend className="mb-2 p-0 text-[.8rem] tracking-[.15em] text-muted uppercase">{title}</legend>
-      <div className="grid gap-2 sm:grid-cols-2">{children}</div>
+      <div className="grid gap-2 sm:grid-cols-2">
+        {items.map((item) => (
+          <button
+            key={item.id}
+            type="button"
+            onClick={() => onSelect(item.id)}
+            aria-pressed={item.id === selectedId}
+            className={`cursor-pointer rounded-md border p-3 text-left transition-colors ${
+              item.id === selectedId ? 'border-accent bg-accent/10' : 'border-border bg-transparent hover:border-accent'
+            }`}
+          >
+            <span className="flex items-baseline justify-between gap-2 text-text">
+              <span className="font-bold">{nameOf(item)}</span>
+              <span className="text-[.85rem] text-accent">{priceOf(item)}</span>
+            </span>
+            {item.description && <span className="mt-0.5 block text-[.8rem] leading-snug text-muted">{item.description}</span>}
+          </button>
+        ))}
+      </div>
     </fieldset>
   )
 }
 
-function Choice({ selected, onSelect, name, detail, price }) {
-  return (
-    <button
-      type="button"
-      onClick={onSelect}
-      aria-pressed={selected}
-      className={`cursor-pointer rounded-md border p-3 text-left transition-colors ${
-        selected ? 'border-accent bg-accent/10' : 'border-border bg-transparent hover:border-accent'
-      }`}
-    >
-      <span className="flex items-baseline justify-between gap-2 text-text">
-        <span className="font-bold">{name}</span>
-        <span className="text-[.85rem] text-accent">{price}</span>
-      </span>
-      {detail && <span className="mt-0.5 block text-[.8rem] leading-snug text-muted">{detail}</span>}
-    </button>
-  )
-}
+const qtyButton = 'h-8 w-8 cursor-pointer rounded-md border border-border bg-transparent text-text disabled:cursor-default disabled:opacity-40'
 
 function PrintPage({ onRequireAuth }) {
   const { id } = useParams()
@@ -163,35 +166,9 @@ function PrintPage({ onRequireAuth }) {
         </div>
 
         <div className="md:sticky md:top-20">
-          <Group title="Size">
-            {options.sizes.map((s) => (
-              <Choice key={s.id} selected={s.id === sizeId} onSelect={() => setSizeId(s.id)} name={s.label} price={formatPrice(s.priceCents)} />
-            ))}
-          </Group>
-          <Group title="Frame">
-            {options.frames.map((f) => (
-              <Choice
-                key={f.id}
-                selected={f.id === frameId}
-                onSelect={() => setFrameId(f.id)}
-                name={f.name}
-                detail={f.description}
-                price={f.priceCents ? `+${formatPrice(f.priceCents)}` : 'Included'}
-              />
-            ))}
-          </Group>
-          <Group title="Finish">
-            {options.finishes.map((f) => (
-              <Choice
-                key={f.id}
-                selected={f.id === finishId}
-                onSelect={() => setFinishId(f.id)}
-                name={f.name}
-                detail={f.description}
-                price={f.priceCents ? `+${formatPrice(f.priceCents)}` : 'Included'}
-              />
-            ))}
-          </Group>
+          <OptionGroup title="Size" items={options.sizes} selectedId={sizeId} onSelect={setSizeId} nameOf={(s) => s.label} priceOf={(s) => formatPrice(s.priceCents)} />
+          <OptionGroup title="Frame" items={options.frames} selectedId={frameId} onSelect={setFrameId} />
+          <OptionGroup title="Finish" items={options.finishes} selectedId={finishId} onSelect={setFinishId} />
 
           <div className="rounded-md border border-border bg-surface p-4">
             <dl className="m-0 grid grid-cols-[1fr_auto] gap-x-4 gap-y-1 text-[.9rem]">
@@ -205,9 +182,9 @@ function PrintPage({ onRequireAuth }) {
             <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
               <div className="flex items-center gap-2">
                 <span id="qty-label" className="text-[.9rem] text-muted">Qty</span>
-                <button type="button" aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className="h-8 w-8 cursor-pointer rounded-md border border-border bg-transparent text-text disabled:cursor-default disabled:opacity-40">−</button>
+                <button type="button" aria-label="Decrease quantity" onClick={() => setQuantity((q) => Math.max(1, q - 1))} disabled={quantity <= 1} className={qtyButton}>−</button>
                 <span aria-labelledby="qty-label" className="w-6 text-center">{quantity}</span>
-                <button type="button" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(MAX_QUANTITY, q + 1))} disabled={quantity >= MAX_QUANTITY} className="h-8 w-8 cursor-pointer rounded-md border border-border bg-transparent text-text disabled:cursor-default disabled:opacity-40">+</button>
+                <button type="button" aria-label="Increase quantity" onClick={() => setQuantity((q) => Math.min(MAX_QUANTITY, q + 1))} disabled={quantity >= MAX_QUANTITY} className={qtyButton}>+</button>
               </div>
               <p className="m-0 font-heading text-[1.5rem]">{formatPrice(unitCents * quantity)}</p>
             </div>

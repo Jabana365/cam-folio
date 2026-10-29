@@ -5,7 +5,8 @@ const looks = {
 }
 
 function StatusBadge({ status }) {
-  const look = looks[status] ?? looks.pending
+  // An unknown status shows as itself instead of passing for "Awaiting payment"
+  const look = looks[status] ?? { label: status, className: 'border-border text-muted' }
   return (
     <span className={`rounded-full border px-3 py-0.5 text-[.75rem] tracking-[.1em] uppercase ${look.className}`}>
       {look.label}

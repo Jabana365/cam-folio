@@ -3,6 +3,7 @@ import { and, desc, eq, sql } from 'drizzle-orm'
 import { db } from '../db/index.js'
 import { comments, photos, user } from '../db/schema.js'
 import { getUser } from '../lib/getUser.js'
+import { parseId } from '../lib/parseId.js'
 
 const router = Router()
 
@@ -10,15 +11,6 @@ const MAX_LENGTH = 500
 const MAX_RAW_LENGTH = 2000 // reject absurd payloads before trimming
 const COOLDOWN_MS = 5000
 const PAGE_SIZE = 100
-const MAX_INT = 2147483647 // largest value an integer column can hold
-
-// Strict id parsing: digits only and within the integer range, else null
-function parseId(value) {
-  if (!/^\d+$/.test(value)) return null
-  const n = Number(value)
-  return n >= 1 && n <= MAX_INT ? n : null
-}
-
 // GET /api/photos/:id/comments -> newest first, with `mine` set for the caller's own
 router.get('/photos/:id/comments', async (req, res) => {
   const photoId = parseId(req.params.id)

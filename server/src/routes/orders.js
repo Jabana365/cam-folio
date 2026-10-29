@@ -23,7 +23,6 @@ const orderColumns = {
   id: orders.id,
   status: orders.status,
   totalCents: orders.totalCents,
-  currency: orders.currency,
   createdAt: orders.createdAt,
   paidAt: orders.paidAt,
 }
@@ -36,10 +35,8 @@ async function withItems(rows) {
     .from(orderItems)
     .innerJoin(photos, eq(photos.id, orderItems.photoId))
     .where(inArray(orderItems.orderId, rows.map((o) => o.id)))
-  return rows.map((o) => ({
-    ...o,
-    items: items.filter((i) => i.orderId === o.id).map(({ orderId, ...i }) => i),
-  }))
+  const itemsByOrder = Map.groupBy(items, (i) => i.orderId)
+  return rows.map((o) => ({ ...o, items: itemsByOrder.get(o.id) ?? [] }))
 }
 
 // GET /api/orders -> the signed-in user's orders, newest first
