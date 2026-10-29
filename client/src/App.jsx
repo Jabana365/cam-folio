@@ -23,7 +23,13 @@ function ScrollToHash() {
 function App() {
   const [authOpen, setAuthOpen] = useState(false)
   const [authReason, setAuthReason] = useState(null) // 'rate' | 'comment' | 'buy' | null
-  const requireAuth = (reason) => { setAuthReason(reason); setAuthOpen(true) }
+  const [afterAuth, setAfterAuth] = useState(null) // { run } to call once sign-in succeeds
+  // onSuccess is optional: the Buy button uses it to carry on to checkout after signing in
+  const requireAuth = (reason, onSuccess) => {
+    setAuthReason(reason)
+    setAfterAuth(onSuccess ? { run: onSuccess } : null)
+    setAuthOpen(true)
+  }
 
   return (
     <>
@@ -39,7 +45,7 @@ function App() {
         </Routes>
       </main>
       <Footer />
-      {authOpen && <AuthModal reason={authReason} onClose={() => setAuthOpen(false)} />}
+      {authOpen && <AuthModal reason={authReason} onSuccess={afterAuth?.run} onClose={() => setAuthOpen(false)} />}
     </>
   )
 }

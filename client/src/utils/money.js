@@ -1,0 +1,6 @@
+const usd = new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' })
+
+// Prices travel as whole cents; this is the only place they become "$65.00"
+export function formatPrice(cents) {
+  return usd.format(cents / 100)
+}

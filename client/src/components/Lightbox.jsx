@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { Link } from 'react-router'
 import Comments from './Comments'
 
 function Lightbox({ photo, position, total, onClose, onPrev, onNext, onRequireAuth }) {
@@ -54,6 +55,9 @@ function Lightbox({ photo, position, total, onClose, onPrev, onNext, onRequireAu
             <button type="button" onClick={onNext} aria-label="Next photo" className={buttonClasses}>
               →
             </button>
+            <Link to={`/print/${photo.id}`} className={`${buttonClasses} no-underline`}>
+              Buy print
+            </Link>
             <button type="button" onClick={onClose} autoFocus className={buttonClasses}>
               Close
             </button>

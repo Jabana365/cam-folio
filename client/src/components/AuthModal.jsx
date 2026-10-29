@@ -6,9 +6,16 @@ const labelClasses = 'text-[.9rem] text-muted'
 const reasonText = {
   rate: 'Rate photos and see how your scores stack up against the community.',
   comment: 'Join the conversation and leave a comment on this photo.',
+  buy: 'An account lets us tie your order to you and show your order history. You will go straight to checkout afterwards.',
 }
 
-function AuthModal({ reason, onClose }) {
+const reasonTitle = {
+  rate: 'Sign in to rate',
+  comment: 'Sign in to comment',
+  buy: 'Sign in to buy',
+}
+
+function AuthModal({ reason, onClose, onSuccess }) {
   // When opened from a locked action, show a short invitation before the form
   const [step, setStep] = useState(reason ? 'prompt' : 'form') // 'prompt' or 'form'
   const [mode, setMode] = useState('signin') // 'signin' or 'signup'
@@ -26,7 +33,10 @@ function AuthModal({ reason, onClose }) {
         : await signIn.email({ email: form.get('email'), password: form.get('password') })
     setBusy(false)
     if (error) setError(error.message || 'Something went wrong')
-    else onClose()
+    else {
+      onClose()
+      onSuccess?.()
+    }
   }
 
   // Esc closes this modal. Capture phase + stopPropagation keeps Esc and the arrow keys
@@ -56,9 +66,7 @@ function AuthModal({ reason, onClose }) {
           onClick={(event) => event.stopPropagation()}
           className="w-full max-w-sm rounded-md border border-border bg-surface p-6 text-center"
         >
-          <h2 className="section-title mb-2 text-[1.5rem]">
-            {reason === 'comment' ? 'Sign in to comment' : 'Sign in to rate'}
-          </h2>
+          <h2 className="section-title mb-2 text-[1.5rem]">{reasonTitle[reason]}</h2>
           <p className="mt-0 mb-5 text-muted">{reasonText[reason]}</p>
           <div className="flex flex-col gap-2">
             <button type="button" onClick={() => choose('signup')} autoFocus className="btn-primary">
