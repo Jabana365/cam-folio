@@ -1,4 +1,4 @@
-import { pgTable, text, integer, serial, boolean, timestamp, unique, check } from 'drizzle-orm/pg-core'
+import { pgTable, text, integer, serial, boolean, timestamp, unique, check, jsonb } from 'drizzle-orm/pg-core'
 import { sql } from 'drizzle-orm'
 
 // ---- Better Auth tables (users, login sessions, credentials) ----
@@ -84,6 +84,63 @@ export const comments = pgTable('comments', {
   photoId: integer('photo_id').notNull().references(() => photos.id, { onDelete: 'cascade' }),
   body: text('body').notNull(),
   createdAt: timestamp('created_at').notNull().defaultNow(),
+})
+
+// ---- Print shop ----
+// Prices live in the database (in cents) so the server is the only place a
+// total is ever calculated. Unit price = size base + frame add-on + finish add-on.
+export const printSizes = pgTable('print_sizes', {
+  id: serial('id').primaryKey(),
+  label: text('label').notNull().unique(),
+  basePriceCents: integer('base_price_cents').notNull(),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+})
+
+export const printFrames = pgTable('print_frames', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull().unique(),
+  description: text('description').notNull().default(''),
+  priceCents: integer('price_cents').notNull().default(0),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+})
+
+export const printFinishes = pgTable('print_finishes', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull().unique(),
+  description: text('description').notNull().default(''),
+  priceCents: integer('price_cents').notNull().default(0),
+  sortOrder: integer('sort_order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+})
+
+// One row per purchase. Only the Stripe webhook may set status to 'paid'.
+export const orders = pgTable('orders', {
+  id: serial('id').primaryKey(),
+  userId: text('user_id').notNull().references(() => user.id, { onDelete: 'cascade' }),
+  status: text('status').notNull().default('pending'), // pending | paid | cancelled
+  totalCents: integer('total_cents').notNull(),
+  currency: text('currency').notNull().default('usd'),
+  stripeSessionId: text('stripe_session_id').unique(),
+  stripePaymentIntentId: text('stripe_payment_intent_id'),
+  shippingName: text('shipping_name'),
+  shippingAddress: jsonb('shipping_address'),
+  createdAt: timestamp('created_at').notNull().defaultNow(),
+  paidAt: timestamp('paid_at'),
+}, (t) => [check('order_status_valid', sql`${t.status} in ('pending', 'paid', 'cancelled')`)])
+
+// What was bought and at what price. The price and option names are copied
+// here at purchase time so old orders stay correct if the shop prices change.
+export const orderItems = pgTable('order_items', {
+  id: serial('id').primaryKey(),
+  orderId: integer('order_id').notNull().references(() => orders.id, { onDelete: 'cascade' }),
+  photoId: integer('photo_id').notNull().references(() => photos.id),
+  quantity: integer('quantity').notNull(),
+  unitPriceCents: integer('unit_price_cents').notNull(),
+  sizeLabel: text('size_label').notNull(),
+  frameName: text('frame_name').notNull(),
+  finishName: text('finish_name').notNull(),
 })
 
 // Messages sent through the contact form.
