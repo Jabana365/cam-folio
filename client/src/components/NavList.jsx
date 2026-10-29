@@ -1,3 +1,4 @@
+import { Link } from 'react-router'
 import { navLinks } from '../data/navLinks'
 
 // className lets Header and Footer lay the list out differently.
@@ -7,13 +8,13 @@ function NavList({ className, onLinkClick }) {
     <ul className={`m-0 flex list-none p-0 ${className}`}>
       {navLinks.map((link) => (
         <li key={link.href}>
-          <a
-            href={link.href}
+          <Link
+            to={link.href}
             onClick={onLinkClick}
             className="text-text no-underline hover:text-accent focus-visible:text-accent"
           >
             {link.label}
-          </a>
+          </Link>
         </li>
       ))}
     </ul>

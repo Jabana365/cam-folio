@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import { Link } from 'react-router'
 import { useSession, signOut } from '../lib/auth-client'
 import Logo from './Logo'
 import NavList from './NavList'
@@ -31,6 +32,13 @@ function Header({ onSignIn }) {
           {session ? (
             <div className="flex items-center gap-3 text-[.9rem]">
               <span className="text-muted">Hi, {session.user.name}</span>
+              <Link
+                to="/orders"
+                onClick={() => setMenuOpen(false)}
+                className="text-text no-underline hover:text-accent focus-visible:text-accent"
+              >
+                My orders
+              </Link>
               <button
                 type="button"
                 onClick={() => signOut()}
